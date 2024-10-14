@@ -1,8 +1,9 @@
-import React, { useState, useRef, ChangeEvent, useEffect } from 'react';
-import { ArrowUp, FileText, Paperclip } from 'lucide-react';
-import cn from 'lib/cn';
-import { truncate } from 'helpers';
-import File from './components/File';
+import React, { ChangeEvent, useEffect,useRef, useState } from "react";
+import { ArrowUp, Paperclip } from "lucide-react";
+
+import File from "./components/File";
+
+import cn from "lib/cn";
 
 const App: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -10,7 +11,7 @@ const App: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if(files.length + (event.target.files?.length ?? 0) > 5) return 
+    if (files.length + (event.target.files?.length ?? 0) > 5) return;
 
     if (event.target.files) {
       const selectedFiles = Array.from(event.target.files);
@@ -30,7 +31,7 @@ const App: React.FC = () => {
     // Simulate file upload
     await new Promise((resolve) => {
       setTimeout(() => {
-        console.log('Files uploaded:', files);
+        console.log("Files uploaded:", files);
         resolve(true);
       }, 2000); // Simulate a 2-second upload time
     });
@@ -39,16 +40,16 @@ const App: React.FC = () => {
     setFiles([]); // Reset selected files after upload
   };
 
-  useEffect(()=>{
-    console.log(files)
-  },[files])
+  useEffect(() => {
+    console.log(files);
+  }, [files]);
 
   const imageURLs = files.map((file) => URL.createObjectURL(file));
 
-const handleRemove = (fileToRemove:File)=>{
-  setFiles((prevFiles) => prevFiles.filter((file) => file !== fileToRemove)); // Remove the file from the list
-     fileInputRef.current!.value = ''
-}
+  const handleRemove = (fileToRemove: File) => {
+    setFiles((prevFiles) => prevFiles.filter((file) => file !== fileToRemove)); // Remove the file from the list
+    fileInputRef.current!.value = "";
+  };
   useEffect(() => {
     return () => {
       imageURLs.forEach((url) => URL.revokeObjectURL(url)); // Clean up URLs
@@ -58,10 +59,13 @@ const handleRemove = (fileToRemove:File)=>{
   return (
     <div className="w-full">
       <div className="flex flex-col items-center max-w-[40rem] w-full mx-auto">
-        <div>
-          Is it okay to drink supplement iron before breakfast?
-        </div>
-        <div className={cn("fixed bottom-[3rem] w-[40rem] overflow-hidden  bg-background-800  border border-gray-700  pt-4 pb-5  rounded-full",files.length && 'rounded-lg')}>
+        <div>Is it okay to drink supplement iron before breakfast?</div>
+        <div
+          className={cn(
+            "fixed bottom-[3rem] w-[40rem] overflow-hidden  bg-background-800  border border-gray-700  pt-4 pb-5  rounded-full",
+            files.length && "rounded-lg"
+          )}
+        >
           <button
             className="absolute bottom-2.5 left-3 "
             onClick={handleFileInputClick}
@@ -77,13 +81,13 @@ const handleRemove = (fileToRemove:File)=>{
             className="hidden"
           />
 
-{files.length > 0 && (
+          {files.length > 0 && (
             <ul className="px-3 mb-3 flex space-x-3 overflow-auto">
               {files.map((file, index) => (
-                <File onRemove={handleRemove} file={file} key={index}/>
+                <File onRemove={handleRemove} file={file} key={index} />
               ))}
             </ul>
-        )}
+          )}
           <input
             type="text"
             className="text-foreground-200 bg-transparent pl-[4rem] pr-[4rem] focus:outline-none w-full "
@@ -93,7 +97,7 @@ const handleRemove = (fileToRemove:File)=>{
           <button
             className="absolute bottom-0.5 right-0"
             onClick={handleUpload}
-            disabled={loadingFiles} 
+            disabled={loadingFiles}
           >
             <ArrowUp className="w-14 h-14 transition-colors hover:bg-background-500  rounded-full p-2 text-foreground-200" />
           </button>

@@ -3,7 +3,7 @@ export { useBuildVersion } from "./useBuildVersion";
 export { useCombinedRefs } from "./useCombinedRefs";
 export { useHover } from "./useHover";
 export { useIndexedDBMessage } from "./useIndexedDBMessage";
-export { useMediaQueries,useMediaQuery } from "./useMediaQuery";
+export { useMediaQueries, useMediaQuery } from "./useMediaQuery";
 export { useOutsideClick } from "./useOutsideClick";
 export { useOverflowCheck } from "./useOverflowCheck";
 export { useOverlayManager } from "./useOverlayManager";

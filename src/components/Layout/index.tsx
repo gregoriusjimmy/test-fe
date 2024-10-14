@@ -32,7 +32,7 @@ const Layout = ({ children }: LayoutProps) => {
   if (!showBaseLayout || !isLogin) return <>{children}</>;
   return (
     <div className="w-full h-full flex min-h-screen">
-    <Sidebar isOpen={sidebarOpen} /> 
+      <Sidebar isOpen={sidebarOpen} />
       <div className="flex flex-col w-full">
         <Header
           onClickMenu={handleClickMenu}
