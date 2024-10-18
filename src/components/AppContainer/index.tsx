@@ -1,10 +1,14 @@
 import { ReactNode, useEffect } from "react";
+import { useQuery } from "react-query";
 
 import Loader from "components/Loader";
 
-import useAuthStore from "store/AuthStore";
+import { queryGetUser } from "api/users";
+import { clearCookies, getCookies, setCookies } from "helpers/cookies";
+import useAuthStore, { INIT_USER } from "store/AuthStore";
 import useThemeStore from "store/ThemeStore";
-import useWorkspaceStore from "store/WorkspaceStore";
+
+import { ECOOKIES_KEY } from "constants/index";
 
 interface AppContainerProps {
   children: ReactNode;
@@ -13,20 +17,49 @@ interface AppContainerProps {
 // Initial Setup App
 const AppContainer = ({ children }: AppContainerProps) => {
   const loadingTheme = useThemeStore((state) => state.loading);
-  const getUserData = useAuthStore((state) => state.getUserData);
-  const isLoadingLogin = useAuthStore((state) => state.loading);
-  const isLogin = useAuthStore((state) => state.isLogin);
+  const loadingAuth = useAuthStore((state) => state.loading);
+  const onSetLoadingAuth = useAuthStore((state) => state.onSetLoading);
+  const onSetUser = useAuthStore((state) => state.onSetUser);
+  const onSetIsLogin = useAuthStore((state) => state.onSetIsLogin);
 
-  const onSetWorkspaceList = useWorkspaceStore(
-    (state) => state.onSetWorkspaceList
+  const rehydrateAllStore = () => {
+    //  useThemeStore.persist.rehydrate();
+    //  useWorkspaceStore.persist.rehydrate();
+  };
+
+  const { isLoading: isLoadingGetUser } = useQuery(
+    queryGetUser._key,
+    queryGetUser,
+    {
+      enabled: !!getCookies(ECOOKIES_KEY.ACCESS_TOKEN),
+      onError: () => {
+        onSetUser(INIT_USER);
+        onSetIsLogin(false);
+        clearCookies();
+      },
+      onSuccess: (data) => {
+        onSetUser(data);
+        const userIdCookie = getCookies(ECOOKIES_KEY.USER_ID);
+        if (!userIdCookie || userIdCookie !== String(data.id)) {
+          //  resetAllStores();
+          window.location.reload();
+        }
+        onSetIsLogin(data.subscriptionActive);
+        setCookies(ECOOKIES_KEY.EMAIL, data.email);
+        setCookies(ECOOKIES_KEY.USER_ID, String(data.id));
+      },
+    }
   );
 
   useEffect(() => {
-    // getUserData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    onSetLoadingAuth(isLoadingGetUser);
+  }, [isLoadingGetUser, onSetLoadingAuth]);
+
+  useEffect(() => {
+    rehydrateAllStore();
   }, []);
 
-  const isLoading = loadingTheme || isLoadingLogin;
+  const isLoading = loadingTheme || loadingAuth;
 
   if (isLoading) {
     return <Loader />;

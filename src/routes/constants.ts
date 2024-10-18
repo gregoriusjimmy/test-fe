@@ -1,4 +1,4 @@
-export const workspaceSlugParam = "workspaceSlug";
+// export const workspaceSlugParam = "workspaceSlug";
 
 // INFO
 // Prioritize static routes by defining them before dynamic route parameters.
@@ -7,19 +7,15 @@ export const routePaths = {
   root: {
     root: "/",
     _name: "root",
-    dms: {
-      root: `/dms`,
-      _name: "dms_root",
-      _parent: "dms_root",
+    login: {
+      root: `/login`,
+      _name: "login_root",
+      _parent: "login_root",
     },
-    requiredAuth: {
-      _name: "requiredAuth",
-      root: `/required-auth`,
-    },
-    workspace: {
-      root: `/:${workspaceSlugParam}`,
-      _name: "workspace_root",
-      _parent: "workspace_root",
-    },
+    // workspace: {
+    //   root: `/:${workspaceSlugParam}`,
+    //   _name: "workspace_root",
+    //   _parent: "workspace_root",
+    // },
   },
 };

@@ -1,12 +1,15 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import camelCase from "lodash.camelcase";
-import startCase from "lodash.startcase";
+import snakeCase from "lodash.snakecase";
 
-import { getCookies } from "helpers/cookies";
+import { EMethod } from "api/index";
+import { getCookies, setCookies } from "helpers/cookies";
+import { isEmptyObject } from "helpers/isEmptyObject";
 import { logout } from "helpers/logout";
 import { transformer } from "helpers/transformer";
 
 import { CHAT_API_URL, ENV } from "config";
+import { ENDPOINT } from "api/endpoint";
 import { ECOOKIES_KEY, EENV, TOKEN_EXPIRED_MESSAGE } from "constants/index";
 
 const _axios = axios.create({
@@ -17,7 +20,7 @@ const _axios = axios.create({
 
 _axios.interceptors.request.use(
   (config) => {
-    const token = getCookies(ECOOKIES_KEY.AUTH);
+    const token = getCookies(ECOOKIES_KEY.ACCESS_TOKEN);
     if (token) {
       config.headers["Authorization"] = token;
     }
@@ -31,58 +34,51 @@ _axios.interceptors.request.use(
   }
 );
 
-const getRefreshToken = async (refreshToken: string, email: string) => {
-  // try {
-  //   const { method, url } = ENDPOINT.USER.GET_REFRESH_TOKEN;
-  //   const response = await axios({
-  //     method,
-  //     baseURL: CHAT_API_URL,
-  //     url,
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     data: {
-  //       Email: email,
-  //       RefreshToken: refreshToken,
-  //     },
-  //   });
-  //   // Check if the response contains the tokens
-  //   const {
-  //     IdToken: idToken,
-  //     RefreshToken: newRefreshToken,
-  //     AccessToken: accessToken,
-  //   } = response.data || {};
-  //   if (!idToken || !newRefreshToken) {
-  //     throw new Error("Refresh token request was not successful.");
-  //   }
-  //   return {
-  //     idToken,
-  //     refreshToken: newRefreshToken,
-  //     accessToken,
-  //   };
-  // } catch (err) {
-  //   throw new Error("Unable to get refresh token.");
-  // }
+const getRefreshToken = async (refreshToken: string) => {
+  try {
+    const { method, url } = ENDPOINT.AUTH.GET_REFRESH_TOKEN;
+    const response = await axios({
+      method,
+      baseURL: CHAT_API_URL,
+      url,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: {
+        refresh_token: refreshToken,
+      },
+    });
+    // Check if the response contains the tokens
+    const { refresh_token: newRefreshToken, access_token: accessToken } =
+      response.data.data || {};
+    if (!newRefreshToken) {
+      throw new Error("Refresh token request was not successful.");
+    }
+    return {
+      refreshToken: newRefreshToken,
+      accessToken,
+    };
+  } catch (err) {
+    throw new Error("Unable to get refresh token.");
+  }
 };
 
 export const refreshToken = async () => {
-  const email = getCookies(ECOOKIES_KEY.EMAIL);
   const refreshTokenFromCookie = getCookies(ECOOKIES_KEY.REFRESH_AUTH);
 
-  if (!refreshTokenFromCookie || !email) {
-    throw new Error("No refresh token or email found.");
+  if (!refreshTokenFromCookie) {
+    throw new Error("No refresh token");
   }
 
-  const res = await getRefreshToken(refreshTokenFromCookie, email);
-  // const { idToken, refreshToken, accessToken } = res;
-  // if (idToken && refreshToken) {
-  //   setCookies(ECOOKIES_KEY.ACCESS_TOKEN, accessToken);
-  //   setCookies(ECOOKIES_KEY.AUTH, idToken);
-  //   setCookies(ECOOKIES_KEY.REFRESH_AUTH, refreshToken);
-  //   return accessToken;
-  // } else {
-  //   throw new Error("Failed to refresh token.");
-  // }
+  const res = await getRefreshToken(refreshTokenFromCookie);
+  const { refreshToken, accessToken } = res;
+  if (accessToken && refreshToken) {
+    setCookies(ECOOKIES_KEY.ACCESS_TOKEN, accessToken);
+    setCookies(ECOOKIES_KEY.REFRESH_AUTH, refreshToken);
+    return accessToken;
+  } else {
+    throw new Error("Failed to refresh token.");
+  }
 };
 
 _axios.interceptors.response.use(
@@ -158,12 +154,25 @@ export const fetcher = <TRes, TReq>(
 ): Promise<AxiosResponse<TRes>> => {
   if (ENV === EENV.DEV) {
     console.log("Payload:");
-    console.log(transformer(config.data, startCase, config.ignoredKeysReq));
+    console.log(transformer(config.data, snakeCase, config.ignoredKeysReq));
+  }
+
+  const data = config.data as any;
+
+  // Replace placeholders in the URL if method is GET and config.data is available
+  if (method === EMethod.GET && !isEmptyObject(data)) {
+    // Replace each placeholder in the URL with the corresponding value from config.data
+    url = url.replace(/{(.*?)}/g, (match, key) => {
+      return key in data! ? data[key] : match; // Use the value if it exists, else keep the placeholder
+    });
   }
   return _axios({
     url,
     method,
-    data: transformer(config.data, startCase, config.ignoredKeysReq),
+    data:
+      method !== EMethod.GET
+        ? transformer(config.data, snakeCase, config.ignoredKeysReq)
+        : undefined,
     ...config,
   });
 };

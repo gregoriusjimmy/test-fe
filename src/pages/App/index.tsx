@@ -1,4 +1,5 @@
-import React, { ChangeEvent, useEffect,useRef, useState } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import { GoogleLogin } from "@react-oauth/google";
 import { ArrowUp, Paperclip } from "lucide-react";
 
 import File from "./components/File";
@@ -59,7 +60,15 @@ const App: React.FC = () => {
   return (
     <div className="w-full">
       <div className="flex flex-col items-center max-w-[40rem] w-full mx-auto">
-        <div>Is it okay to drink supplement iron before breakfast?</div>
+        <GoogleLogin
+          onSuccess={(credentialResponse) => {
+            console.log(credentialResponse);
+          }}
+          onError={() => {
+            console.log("Login Failed");
+          }}
+        />
+        ;<div>Is it okay to drink supplement iron before breakfast?</div>
         <div
           className={cn(
             "fixed bottom-[3rem] w-[40rem] overflow-hidden  bg-background-800  border border-gray-700  pt-4 pb-5  rounded-full",
@@ -102,7 +111,6 @@ const App: React.FC = () => {
             <ArrowUp className="w-14 h-14 transition-colors hover:bg-background-500  rounded-full p-2 text-foreground-200" />
           </button>
         </div>
-
         {/* Show loading message while files are being uploaded */}
         {loadingFiles && <p className="text-blue-600">Uploading files...</p>}
       </div>

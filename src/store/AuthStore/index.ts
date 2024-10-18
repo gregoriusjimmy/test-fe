@@ -1,70 +1,67 @@
 import { create } from "zustand";
 
-import { getCookies } from "helpers/cookies";
+import { TUser } from "api/users/types";
 
-import { ECOOKIES_KEY } from "constants/index";
-
-export const DUMMY_USER: any = {
-  id: "",
+export const INIT_USER: TUser = {
+  id: 0,
   email: "",
-  country: "",
-  address: "",
-  phone: "",
-  fullName: "",
-  preferredName: "",
-  birthdate: "",
-  cognitoId: "",
-  imageProfile: "",
-  imagePhoto: "",
-  imageDriverLicense: "",
-  imagePhotoBack: "",
-  imageDriverLicenseBack: "",
-  jobOfferId: "",
-  languages: "",
-  timeZone: "",
-  temperature: "",
-  timeFormat: 0,
-  uniqueUserId: "",
-  created: "",
-  updated: "",
-  active: false,
-  imageUrlProfile: "",
-  imageUrlPhoto: "",
-  imageUrlDriverLicense: "",
-  imageUrlPhotoBack: "",
-  imageUrlDriverLicenseBack: "",
+  role: "",
+  authType: "",
+  subscriptionActive: false,
+  subscriptionStartDate: "",
+  subscriptionExpiredDate: "",
+  createdAt: "",
 };
 
 type TAuthStore = {
   isLogin: boolean;
   loading: boolean;
-  user: any;
-  getUserData: () => void;
+  user: TUser;
+  onSetLoading: (loading: boolean) => void;
+  onSetUser: (user: TUser) => void;
+  onSetIsLogin: (isLogin: boolean) => void;
 };
 
-const useAuthStore = create<TAuthStore>((set) => ({
-  isLogin: true,
+const useAuthStore = create<TAuthStore>()((set) => ({
+  isLogin: false,
   loading: false,
-  user: DUMMY_USER,
-  getUserData: async () => {
-    const token = getCookies(ECOOKIES_KEY.AUTH);
-    if (!token) {
-      set({ isLogin: false, user: DUMMY_USER });
-      return;
-    }
-    set({ loading: true });
-    // try {
-    //   const response = await getUser();
-    //   const userData = response.data;
-    //   set({ user: userData, isLogin: userData.active });
-    //   setCookies(ECOOKIES_KEY.EMAIL, userData.email);
-    // } catch (error) {
-    //   set({ user: DUMMY_USER, isLogin: false });
-    //   clearCookies();
-    // } finally {
-    //   set({ loading: false });
-    // }
+  user: INIT_USER,
+  onSetLoading: (loading) => {
+    set({ loading });
+  },
+  onSetUser: (user) => {
+    set({ user });
+  },
+  onSetIsLogin: (isLogin) => {
+    set({ isLogin });
   },
 }));
 
 export default useAuthStore;
+
+// const useWorkspaceStore = create<TWorkspaceStore>()(
+//   persist(
+//     (set) => ({
+//       workspaceList: [],
+//       selectedWorkspace: null,
+//       lastSavedWorkspace: null,
+//       onSetWorkspaceList: (workspaceList: TWorkspace[]) => {
+//         set({ workspaceList });
+//       },
+//       onSetSelectedWorkspace: (selectedWorkspace: TWorkspace | null) => {
+//         set({ selectedWorkspace });
+//       },
+//       onSetLastSavedWorkspace: (lastSavedWorkspace: TWorkspace) => {
+//         set({ lastSavedWorkspace });
+//       },
+//     }),
+//     {
+//       name: "workspace-storage",
+//       partialize: (state) => ({
+//         lastSavedWorkspace: state.lastSavedWorkspace,
+//       }),
+//     }
+//   )
+// );
+
+// export default useWorkspaceStore;

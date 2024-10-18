@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "react-query";
 import { RouterProvider } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import { useBuildVersion } from "hooks/useBuildVersion";
 
@@ -10,9 +11,11 @@ const App = () => {
   const queryClient = new QueryClient();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />{" "}
-    </QueryClientProvider>
+    <GoogleOAuthProvider clientId="356665215062-v7mjgvr9goqljdprci5prni8f2fob7bi.apps.googleusercontent.com">
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </GoogleOAuthProvider>
   );
 };
 

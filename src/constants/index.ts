@@ -3,15 +3,13 @@ export enum ELOCALSTORAGE_KEY {
 }
 
 export enum ECOOKIES_KEY {
-  AUTH = "TOKEN",
   REFRESH_AUTH = "REFRESH_TOKEN",
   ACCESS_TOKEN = "ACCESS_TOKEN",
+  USER_ID = "USER_ID",
   EMAIL = "EMAIL",
-  DEVICE_ID = "DEVICE_ID",
-  DEVICE_TOKEN = "DEVICE_TOKEN",
 }
 
-export const TOKEN_EXPIRED_MESSAGE = "Token is expired";
+export const TOKEN_EXPIRED_MESSAGE = "Invalid token";
 
 export enum EENV {
   "DEV" = "development",
