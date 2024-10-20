@@ -29,7 +29,13 @@ const Layout = ({ children }: LayoutProps) => {
     setSidebarOpen(isLg);
   }, [isLg]);
 
-  if (!showBaseLayout || !isLogin) return <>{children}</>;
+  useEffect(()=>{
+    console.log(showBaseLayout)
+  })
+  
+  if (!showBaseLayout) return <>{children}</>;
+
+  
   return (
     <div className="w-full h-full flex min-h-screen">
       <Sidebar isOpen={sidebarOpen} />

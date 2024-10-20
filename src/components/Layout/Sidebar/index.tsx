@@ -29,24 +29,29 @@ const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
   const handleChangeSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
   };
+
   useEffect(() => {
     if (isSearchOpen) {
       ref.current?.focus();
     }
   }, [isSearchOpen]);
+
+
   return (
     <div
-      style={{ width: isOpen ? MIN_SIDEBAR_WIDTH : 0 }}
+      style={{ width: isOpen ? MIN_SIDEBAR_WIDTH : 0,
+        visibility: isOpen ? 'visible' : 'hidden', 
+        opacity: isOpen ? 1 : 0,
+       }}
       className={cn(
-        "bg-background-900 flex flex-col h-screen border-r border-r-gray-800 transition-all duration-300 flex-shrink-0",
-        {}
+        "bg-background-900 relative flex flex-col h-screen border-r border-r-gray-800 transition-all duration-300 flex-shrink-0",
       )}
     >
       <div
         style={{ height: SIDEBAR_HEADER_HEIGHT }}
-        className="flex flex-col pb-2"
+        className="flex flex-col pb-2 pt-4"
       >
-        <div>Logo</div>
+        <img src="images/logo.png" className="w-fit h-[3rem] mx-4 mb-4" />
         <div className="flex space-x-3 w-full px-4">
           <Button
             onClick={handleClickSearch}

@@ -43,6 +43,7 @@
     "tailwind": "npx tailwindcss -i ./src/tailwind-setup.css -o ./src/index.css --watch",
     "tailwind:build": "npx tailwindcss -i ./src/tailwind-setup.css -o ./src/index.css",
     "start": "concurrently \"react-app-rewired start\" \"npm run tailwind\"",
+    "start:mac": "react-app-rewired start & npm run tailwind",
     "build": "npm run tailwind:build && npm run update-build-version && GENERATE_SOURCEMAP=false react-app-rewired build",
     "update-build-version": "node ./src/updateBuildVersion.js",
     "test": "jest --coverage src --detectOpenHandles",

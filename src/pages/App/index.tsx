@@ -60,15 +60,7 @@ const App: React.FC = () => {
   return (
     <div className="w-full">
       <div className="flex flex-col items-center max-w-[40rem] w-full mx-auto">
-        <GoogleLogin
-          onSuccess={(credentialResponse) => {
-            console.log(credentialResponse);
-          }}
-          onError={() => {
-            console.log("Login Failed");
-          }}
-        />
-        ;<div>Is it okay to drink supplement iron before breakfast?</div>
+        <div>Is it okay to drink supplement iron before breakfast?</div>
         <div
           className={cn(
             "fixed bottom-[3rem] w-[40rem] overflow-hidden  bg-background-800  border border-gray-700  pt-4 pb-5  rounded-full",
