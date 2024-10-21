@@ -10,7 +10,7 @@ export const routes: RouteType[] = [
   {
     path: routePaths.root.root,
     element: <App />,
-    // requiredAuth: true,
+    requiredAuth: true,
     withoutLayout:false,
   },
   {

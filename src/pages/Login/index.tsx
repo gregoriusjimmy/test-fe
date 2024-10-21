@@ -21,7 +21,6 @@ const Login: React.FC = () => {
     flow: "auth-code",
     onSuccess: async (res) => {
       try {
-        console.log(res);
         const {
           data: { data },
         } = await loginGoogle({
@@ -29,6 +28,8 @@ const Login: React.FC = () => {
         });
         setCookies(ECOOKIES_KEY.ACCESS_TOKEN, data.accessToken);
         setCookies(ECOOKIES_KEY.REFRESH_AUTH, data.refreshToken);
+        setCookies(ECOOKIES_KEY.EMAIL, data.user.email);
+        setCookies(ECOOKIES_KEY.USER_ID, String(data.user.id));
         onSetUser(data.user);
         onSetIsLogin(data.user.subscriptionActive);
         navigate(routePaths.root.root);

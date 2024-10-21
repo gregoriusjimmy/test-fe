@@ -17,7 +17,6 @@ interface AppContainerProps {
 // Initial Setup App
 const AppContainer = ({ children }: AppContainerProps) => {
   const loadingTheme = useThemeStore((state) => state.loading);
-  const loadingAuth = useAuthStore((state) => state.loading);
   const onSetLoadingAuth = useAuthStore((state) => state.onSetLoading);
   const onSetUser = useAuthStore((state) => state.onSetUser);
   const onSetIsLogin = useAuthStore((state) => state.onSetIsLogin);
@@ -28,10 +27,10 @@ const AppContainer = ({ children }: AppContainerProps) => {
   };
 
   const { isLoading: isLoadingGetUser } = useQuery(
-    queryGetUser._key,
-    queryGetUser,
+    queryGetUser._key(getCookies(ECOOKIES_KEY.USER_ID)),
+    ()=>queryGetUser({id:getCookies(ECOOKIES_KEY.USER_ID)}),
     {
-      enabled: !!getCookies(ECOOKIES_KEY.ACCESS_TOKEN),
+      enabled: !!getCookies(ECOOKIES_KEY.ACCESS_TOKEN) && !!getCookies(ECOOKIES_KEY.USER_ID),
       onError: () => {
         onSetUser(INIT_USER);
         onSetIsLogin(false);
@@ -59,7 +58,7 @@ const AppContainer = ({ children }: AppContainerProps) => {
     rehydrateAllStore();
   }, []);
 
-  const isLoading = loadingTheme || loadingAuth;
+  const isLoading = loadingTheme || isLoadingGetUser ;
 
   if (isLoading) {
     return <Loader />;

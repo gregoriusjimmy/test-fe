@@ -12,10 +12,12 @@ import {
   SIDEBAR_FOOTER_HEIGHT,
   SIDEBAR_HEADER_HEIGHT,
 } from "../constants";
+import { logout } from "api/auth";
 
 const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [loadingLogout,setLoadingLogout] = useState(false)
   const ref = useRef<HTMLInputElement>(null);
   useOutsideClick(ref, () => {
     setIsSearchOpen(false);
@@ -36,6 +38,13 @@ const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
     }
   }, [isSearchOpen]);
 
+  const handleLogout = async ()=>{
+    if(loadingLogout) return
+    setLoadingLogout(true)
+      await logout().finally(()=>{
+        setLoadingLogout(false)
+      })
+  }
 
   return (
     <div
@@ -99,7 +108,7 @@ const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
         <div className="flex items-center">
           <User className="mr-2 w-5 h-5" /> <div>gregoriusjimmy@gmail.com</div>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center" onClick={handleLogout}>
           <LogOut className="mr-2 w-5 h-5" /> <button>Logout</button>
         </div>
       </div>
