@@ -11,7 +11,7 @@ export const routes: RouteType[] = [
     path: routePaths.root.root,
     element: <App />,
     requiredAuth: true,
-    withoutLayout:false,
+    withoutLayout: false,
   },
   {
     path: routePaths.root.login.root,

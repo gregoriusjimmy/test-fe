@@ -2,7 +2,10 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { CirclePlus, LogOut, Search, User } from "lucide-react";
 
 import Button from "components/Button";
+import Topics from "./Topics";
 
+import { logout as fetchLogout } from "api/auth";
+import { logout } from "helpers/logout";
 import { useOutsideClick } from "hooks/useOutsideClick";
 import cn from "lib/cn";
 
@@ -12,12 +15,11 @@ import {
   SIDEBAR_FOOTER_HEIGHT,
   SIDEBAR_HEADER_HEIGHT,
 } from "../constants";
-import { logout } from "api/auth";
 
 const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [loadingLogout,setLoadingLogout] = useState(false)
+  const [loadingLogout, setLoadingLogout] = useState(false);
   const ref = useRef<HTMLInputElement>(null);
   useOutsideClick(ref, () => {
     setIsSearchOpen(false);
@@ -38,22 +40,24 @@ const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
     }
   }, [isSearchOpen]);
 
-  const handleLogout = async ()=>{
-    if(loadingLogout) return
-    setLoadingLogout(true)
-      await logout().finally(()=>{
-        setLoadingLogout(false)
-      })
-  }
+  const handleLogout = async () => {
+    if (loadingLogout) return;
+    setLoadingLogout(true);
+    await fetchLogout().finally(() => {
+      setLoadingLogout(false);
+      logout();
+    });
+  };
 
   return (
     <div
-      style={{ width: isOpen ? MIN_SIDEBAR_WIDTH : 0,
-        visibility: isOpen ? 'visible' : 'hidden', 
+      style={{
+        width: isOpen ? MIN_SIDEBAR_WIDTH : 0,
+        visibility: isOpen ? "visible" : "hidden",
         opacity: isOpen ? 1 : 0,
-       }}
+      }}
       className={cn(
-        "bg-background-900 relative flex flex-col h-screen border-r border-r-gray-800 transition-all duration-300 flex-shrink-0",
+        "bg-background-900 relative flex flex-col h-screen border-r border-r-gray-800 transition-all duration-300 flex-shrink-0"
       )}
     >
       <div
@@ -96,10 +100,9 @@ const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
       </div>
       <div
         style={{ height: SIDEBAR_CONTENT_HEIGHT }}
-        className="overflow-auto h-[80vh]"
+        className="overflow-auto h-[80vh] px-4 mt-4"
       >
-        <div>folder</div>
-        <div>recents</div>
+        <Topics searchText={searchText} />
       </div>
       <div
         style={{ height: SIDEBAR_FOOTER_HEIGHT }}

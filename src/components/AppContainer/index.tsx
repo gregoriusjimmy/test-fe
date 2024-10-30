@@ -20,7 +20,7 @@ const AppContainer = ({ children }: AppContainerProps) => {
   const onSetLoadingAuth = useAuthStore((state) => state.onSetLoading);
   const onSetUser = useAuthStore((state) => state.onSetUser);
   const onSetIsLogin = useAuthStore((state) => state.onSetIsLogin);
-
+  const isLogin = useAuthStore((state) => state.isLogin);
   const rehydrateAllStore = () => {
     //  useThemeStore.persist.rehydrate();
     //  useWorkspaceStore.persist.rehydrate();
@@ -28,9 +28,11 @@ const AppContainer = ({ children }: AppContainerProps) => {
 
   const { isLoading: isLoadingGetUser } = useQuery(
     queryGetUser._key(getCookies(ECOOKIES_KEY.USER_ID)),
-    ()=>queryGetUser({id:getCookies(ECOOKIES_KEY.USER_ID)}),
+    () => queryGetUser({ id: getCookies(ECOOKIES_KEY.USER_ID) }),
     {
-      enabled: !!getCookies(ECOOKIES_KEY.ACCESS_TOKEN) && !!getCookies(ECOOKIES_KEY.USER_ID),
+      enabled:
+        !!getCookies(ECOOKIES_KEY.ACCESS_TOKEN) &&
+        !!getCookies(ECOOKIES_KEY.USER_ID),
       onError: () => {
         onSetUser(INIT_USER);
         onSetIsLogin(false);
@@ -43,7 +45,8 @@ const AppContainer = ({ children }: AppContainerProps) => {
           //  resetAllStores();
           window.location.reload();
         }
-        onSetIsLogin(data.subscriptionActive);
+        //TODO: handle subsription
+        onSetIsLogin(true);
         setCookies(ECOOKIES_KEY.EMAIL, data.email);
         setCookies(ECOOKIES_KEY.USER_ID, String(data.id));
       },
@@ -58,7 +61,7 @@ const AppContainer = ({ children }: AppContainerProps) => {
     rehydrateAllStore();
   }, []);
 
-  const isLoading = loadingTheme || isLoadingGetUser ;
+  const isLoading = loadingTheme || isLoadingGetUser;
 
   if (isLoading) {
     return <Loader />;

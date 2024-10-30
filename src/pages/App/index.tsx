@@ -1,10 +1,12 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
-import { GoogleLogin } from "@react-oauth/google";
 import { ArrowUp, Paperclip } from "lucide-react";
 
 import File from "./components/File";
 
+import { getCookies } from "helpers/cookies";
 import cn from "lib/cn";
+
+import { ECOOKIES_KEY } from "constants/index";
 
 const App: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
@@ -61,6 +63,7 @@ const App: React.FC = () => {
     <div className="w-full">
       <div className="flex flex-col items-center max-w-[40rem] w-full mx-auto">
         <div>Is it okay to drink supplement iron before breakfast?</div>
+        <div className="break-all">{getCookies(ECOOKIES_KEY.ACCESS_TOKEN)}</div>
         <div
           className={cn(
             "fixed bottom-[3rem] w-[40rem] overflow-hidden  bg-background-800  border border-gray-700  pt-4 pb-5  rounded-full",

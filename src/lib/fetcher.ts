@@ -84,7 +84,7 @@ export const refreshToken = async () => {
 _axios.interceptors.response.use(
   async (res) => {
     const ignoredKeys =
-      (res.config as TFetcherConfig<any>).ignoredKeysRes || [];
+      (res.config as TFetcherConfig<any, any>).ignoredKeysRes || [];
     if (ENV === EENV.DEV) {
       console.log("Response:");
       console.log(transformer(res.data, camelCase, ignoredKeys));
@@ -137,10 +137,11 @@ _axios.interceptors.response.use(
   }
 );
 
-export type TFetcherConfig<T> = AxiosRequestConfig<T> & {
+export type TFetcherConfig<T, A> = AxiosRequestConfig<T> & {
   isPublic?: boolean;
   ignoredKeysReq?: string[];
   ignoredKeysRes?: string[];
+  urlData?: A;
 };
 
 export type TFetcherError = {
@@ -148,31 +149,31 @@ export type TFetcherError = {
   code: string;
 };
 
-export const fetcher = <TRes, TReq>(
-  { url, method }: { url: string; method: string },
-  config: TFetcherConfig<TReq> = {}
+export const fetcher = <TRes, TReq, TParam = unknown>(
+  { url, method }: { url: string; method: EMethod },
+  config: TFetcherConfig<TReq, TParam> = {}
 ): Promise<AxiosResponse<TRes>> => {
   if (ENV === EENV.DEV) {
     console.log("Payload:");
     console.log(transformer(config.data, snakeCase, config.ignoredKeysReq));
   }
-
-  const data = config.data as any;
+  const urlData = config.urlData as any;
 
   // Replace placeholders in the URL if method is GET and config.data is available
-  if (method === EMethod.GET && !isEmptyObject(data)) {
+  if (
+    [EMethod.GET, EMethod.DELETE, EMethod.PUT].includes(method) &&
+    !isEmptyObject(urlData)
+  ) {
     // Replace each placeholder in the URL with the corresponding value from config.data
     url = url.replace(/{(.*?)}/g, (match, key) => {
-      return key in data! ? data[key] : match; // Use the value if it exists, else keep the placeholder
+      return key in urlData! ? urlData[key] : match; // Use the value if it exists, else keep the placeholder
     });
   }
+
   return _axios({
     url,
     method,
-    data:
-      method !== EMethod.GET
-        ? transformer(config.data, snakeCase, config.ignoredKeysReq)
-        : undefined,
+    data: transformer(config.data, snakeCase, config.ignoredKeysReq),
     ...config,
   });
 };

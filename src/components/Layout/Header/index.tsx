@@ -1,3 +1,4 @@
+import AIModelPicker from "./AIModelPicker";
 import { Menu, MessageSquareDiff } from "lucide-react";
 
 import { useMediaQueries } from "hooks/useMediaQuery";
@@ -15,7 +16,7 @@ const Header = ({ onClickMenu, onClickNewChat }: HeaderProps) => {
   return (
     <div
       style={{ height: MAIN_HEADER_HEIGHT }}
-      className=" bg-background-900 w-full flex items-center px-4"
+      className="bg-background-900 w-full flex items-center px-4"
     >
       {!isLg && (
         <div className="flex items-center space-x-3">
@@ -33,6 +34,9 @@ const Header = ({ onClickMenu, onClickNewChat }: HeaderProps) => {
           </button>
         </div>
       )}
+      <div className="ml-auto">
+        <AIModelPicker />
+      </div>
     </div>
   );
 };

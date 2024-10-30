@@ -1,6 +1,8 @@
 import { TCommonApiRes } from "..";
 
-export type TGetUserReq = {
+import { TTopic } from "api/topics/types";
+
+export type TGetUserParam = {
   id: string;
 };
 
@@ -16,3 +18,9 @@ export type TUser = {
   subscriptionExpiredDate: string;
   createdAt: string;
 };
+
+export type TGetUserTopicsParam = {
+  id: string;
+};
+
+export type TGetUserTopicsRes = TCommonApiRes<TTopic[]>;

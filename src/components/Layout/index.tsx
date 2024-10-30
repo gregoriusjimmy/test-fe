@@ -7,6 +7,8 @@ import { useMediaQueries } from "hooks";
 import useAuthStore from "store/AuthStore";
 import useLayoutStore from "store/LayoutStore";
 
+import { MAIN_APP_WIDTH } from "./constants";
+
 export interface LayoutProps {
   children: ReactNode;
 }
@@ -29,17 +31,19 @@ const Layout = ({ children }: LayoutProps) => {
     setSidebarOpen(isLg);
   }, [isLg]);
 
-  useEffect(()=>{
-    console.log(showBaseLayout)
-  })
-  
+  useEffect(() => {
+    console.log(showBaseLayout);
+  });
+
   if (!showBaseLayout) return <>{children}</>;
 
-  
   return (
     <div className="w-full h-full flex min-h-screen">
       <Sidebar isOpen={sidebarOpen} />
-      <div className="flex flex-col w-full">
+      <div
+        style={{ minWidth: sidebarOpen ? MAIN_APP_WIDTH : "100%" }}
+        className="flex flex-col"
+      >
         <Header
           onClickMenu={handleClickMenu}
           onClickNewChat={handleClickNewChat}
