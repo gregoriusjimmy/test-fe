@@ -105,7 +105,7 @@ const Topic = ({ topic, onDelete, onRename, onTogglePinned }: TopicProps) => {
             top: `${position.y}px`,
             left: `${position.x}px`,
           }}
-          className="absolute  z-30 py-4 space-y-1  flex flex-col rounded-lg bg-background-500"
+          className="absolute  z-30 py-4 space-y-1 flex flex-col rounded-lg bg-background-500"
         >
           <div
             className="text-foreground-300 flex items-center hover:bg-background-400 cursor-pointer pl-4 pr-8 py-2"

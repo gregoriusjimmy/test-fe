@@ -9,6 +9,7 @@ import useAuthStore from "store/AuthStore";
 
 import { ECOOKIES_KEY } from "constants/index";
 import { routePaths } from "routes/constants";
+import { LogoWhiteSVG } from "components/assets";
 
 const Login: React.FC = () => {
   const onSetIsLogin = useAuthStore((state) => state.onSetIsLogin);
@@ -46,20 +47,23 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-background-800">
-      <div className="w-fit  px-8 py-8 flex border rounded-xl flex-col items-center border-background-500 bg-background-700 shadow-sm shadow-background-400">
-        <img className="w-[30rem] mb-5" src="/images/logo.png" alt="Multi Ai" />
-        <p className="mb-5 font-medium text-lg">
+    <div className="w-screen h-screen flex items-center justify-center bg-background-800  ">
+      <div className="w-fit coolBorder rounded-xl   ">
+        <div className="flex w-full flex-col px-20 py-8 rounded-xl  items-center bg-background-700 ">
+        <LogoWhiteSVG className="w-[20rem] mb-8 h-auto"  />
+        <p className="mb-5 font-medium text-lg text-foreground-200">
           Sign in to start using MultiAi
         </p>
         <button
           className="flex w-fit whitespace-pre px-8 items-center hover:bg-background-500 transition  text-foreground-400 pt-3 pb-4 bg-background-400 font-medium rounded-full text-xl shadow"
           onClick={handleLogin}
         >
-          <GoogleIcon className="w-8 h-8 mr-1" />
-          <div className="">Continue with google </div>
+          <GoogleIcon className="w-8 h-8 mr-1 text-foreground-200" />
+          <div className="text-foreground-200">Continue with google </div>
         </button>
+        </div>
       </div>
+      
     </div>
   );
 };

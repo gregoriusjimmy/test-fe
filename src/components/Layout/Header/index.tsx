@@ -4,6 +4,7 @@ import { Menu, MessageSquareDiff } from "lucide-react";
 import { useMediaQueries } from "hooks/useMediaQuery";
 
 import { MAIN_HEADER_HEIGHT } from "../constants";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 interface HeaderProps {
   onClickMenu: () => void;
@@ -34,7 +35,8 @@ const Header = ({ onClickMenu, onClickNewChat }: HeaderProps) => {
           </button>
         </div>
       )}
-      <div className="ml-auto">
+      <div className="ml-auto flex items-center space-x-8">
+        <ThemeSwitcher />
         <AIModelPicker />
       </div>
     </div>

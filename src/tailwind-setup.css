@@ -5,10 +5,8 @@
 
 
 
-@layer base {
 
-
-  :root {
+   .dark {
     /* Dark Mode Colors (from lighter to darkest) */
     --background-100: 200, 200, 200; /* Light Gray */
     --background-200: 140, 140, 140; /* Medium Light Gray */
@@ -56,24 +54,24 @@
   .light {
     /* Light Mode Colors (from lightest to darker) */
     --background-100: 255, 255, 255; /* Pure White */
-    --background-200: 240, 240, 240; /* Very Light Background */
-    --background-300: 220, 220, 220; /* Light Background */
-    --background-400: 200, 200, 200; /* Medium Light Background */
-    --background-500: 178, 178, 178; /* Default Background */
-    --background-600: 150, 150, 150; /* Medium Dark Background */
-    --background-700: 120, 120, 120; /* Darker Background */
-    --background-800: 90, 90, 90;    /* Very Dark Background */
-    --background-900: 60, 60, 60;    /* Almost Black Background */
-
+    --background-200: 255, 255, 255; /* Pure White */
+    --background-300: 255, 255, 255; /* Almost Pure White */
+    --background-400: 255, 255, 255; /* Very Light Background */
+    --background-500: 240, 240, 240; /* Light Default Background */
+    --background-600: 230, 230, 230; /* Light Medium Dark Background */
+    --background-700: 215, 215, 215; /* Light Darker Background */
+    --background-800: 200, 200, 200; /* Light Very Dark Background */
+    --background-900: 185, 185, 185; /* Light Almost Black Background */
+    
     --foreground-100: 0, 0, 0;         /* Pure Black Text */
-    --foreground-200: 30, 30, 30;     /* Very Dark Text */
-    --foreground-300: 50, 50, 50;     /* Darker Text */
-    --foreground-400: 70, 70, 70;     /* Medium Dark Text */
-    --foreground-500: 90, 90, 90;     /* Default Text */
-    --foreground-600: 110, 110, 110;  /* Medium Light Text */
-    --foreground-700: 130, 130, 130;  /* Soft Text */
-    --foreground-800: 150, 150, 150;  /* Light Text */
-    --foreground-900: 255, 255, 255;  /* Very Light Text (Pure White) */
+    --foreground-200: 15, 15, 15;      /* Darker Text */
+    --foreground-300: 30, 30, 30;      /* Very Dark Text */
+    --foreground-400: 50, 50, 50;      /* Darker Medium Text */
+    --foreground-500: 70, 70, 70;      /* Default Text */
+    --foreground-600: 90, 90, 90;      /* Medium Light Text */
+    --foreground-700: 110, 110, 110;    /* Soft Medium Light Text */
+    --foreground-800: 130, 130, 130;    /* Soft Light Text */
+    --foreground-900: 220, 220, 220;    /* Light Gray Text */
 
     /* Primary Color Scale for Light Mode */
     --primary-100: 240, 240, 240;     /* Light Primary */
@@ -97,7 +95,6 @@
     --secondary-800: 30, 30, 30;     /* Very Dark Secondary */
     --secondary-900: 10, 10, 10;     /* Almost Black Secondary */
   }
-}
 
 @layer base {
   body,
@@ -110,5 +107,52 @@
 
   .absolute-center {
     @apply  absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+  }
+}
+
+
+@layer components{
+  
+}
+
+
+@property --angle{
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.coolBorder{
+  position: relative;
+  overflow:visible;
+  z-index: 1;
+}
+
+.coolBorder::after, .coolBorder::before{
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-image: conic-gradient(from var(--angle), transparent,#60A5FA);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  padding: 1rem;
+  border-radius: 10px;
+  animation: 3s spin-border linear infinite;
+}
+
+.coolBorder::before{
+  filter: blur(1.5rem);
+  opacity: 1;
+}
+
+@keyframes spin-border{
+  from{
+    --angle: 0deg;
+  }
+  to{
+    --angle: 360deg;
   }
 }

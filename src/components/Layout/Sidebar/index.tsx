@@ -15,11 +15,14 @@ import {
   SIDEBAR_FOOTER_HEIGHT,
   SIDEBAR_HEADER_HEIGHT,
 } from "../constants";
+import { LogoWhiteSVG } from "components/assets";
+import useAuthStore from "store/AuthStore";
 
 const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [loadingLogout, setLoadingLogout] = useState(false);
+  const email = useAuthStore(state=>state.user.email)
   const ref = useRef<HTMLInputElement>(null);
   useOutsideClick(ref, () => {
     setIsSearchOpen(false);
@@ -64,7 +67,9 @@ const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
         style={{ height: SIDEBAR_HEADER_HEIGHT }}
         className="flex flex-col pb-2 pt-4"
       >
-        <img src="images/logo.png" className="w-fit h-[3rem] mx-4 mb-4" />
+        <div className="py-2 flex items-center justify-center">
+        <LogoWhiteSVG  className="w-fit h-auto mx-4 mb-4" />
+        </div>
         <div className="flex space-x-3 w-full px-4">
           <Button
             onClick={handleClickSearch}
@@ -108,11 +113,11 @@ const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
         style={{ height: SIDEBAR_FOOTER_HEIGHT }}
         className="flex flex-col px-4 items-start py-5 space-y-3"
       >
-        <div className="flex items-center">
-          <User className="mr-2 w-5 h-5" /> <div>gregoriusjimmy@gmail.com</div>
+        <div className="flex items-center text-foreground-200">
+          <User className="mr-2 w-5 h-5 " /> <div>{email}</div>
         </div>
-        <div className="flex items-center" onClick={handleLogout}>
-          <LogOut className="mr-2 w-5 h-5" /> <button>Logout</button>
+        <div className="flex items-center text-foreground-200" onClick={handleLogout}>
+          <LogOut className="mr-2 w-5 h-5 " /> <button>Logout</button>
         </div>
       </div>
     </div>
