@@ -42,7 +42,7 @@ const File = ({
       ) : (
         <div className="flex items-center w-[10rem] h-16 space-x-2 px-3 border border-gray-700 rounded-lg">
           <FileText className="w-8 h-8 shrink-0" color="gray" />
-          <span className="line-clamp-1">{file.name}</span>
+          <span className="line-clamp-1 text-base">{file.name}</span>
         </div>
       )}
     </div>

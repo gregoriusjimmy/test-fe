@@ -1,5 +1,6 @@
 import { AI_MODELS_ENDPOINT } from "./ai-models/endpoint";
 import { AUTH_ENDPOINT } from "./auth/endpoint";
+import { MESSAGES_ENDPOINT } from "./messages/endpoint";
 import { TOPICS_ENDPOINT } from "./topics/endpoint";
 import { USERS_ENDPOINT } from "./users/endpoint";
 
@@ -8,4 +9,5 @@ export const ENDPOINT = {
   USERS: USERS_ENDPOINT,
   TOPICS: TOPICS_ENDPOINT,
   AI_MODELS: AI_MODELS_ENDPOINT,
+  MESSAGES:MESSAGES_ENDPOINT
 };

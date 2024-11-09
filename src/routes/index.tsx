@@ -5,6 +5,7 @@ import AuthRoute from "components/AuthRoute";
 import Layout from "components/Layout";
 import LayoutRoute from "components/LayoutRoute";
 import { routes } from "./routes";
+import TopicRoute from "components/TopicRoute";
 
 const MainElement = () => {
   return (
@@ -23,7 +24,11 @@ const router = createBrowserRouter([
       path: route.path,
       element: (
         <LayoutRoute route={route}>
-          <AuthRoute route={route}>{route.element}</AuthRoute>
+          <AuthRoute route={route}>
+            <TopicRoute route={route}>
+            {route.element}
+            </TopicRoute>
+            </AuthRoute>
         </LayoutRoute>
       ),
     })),

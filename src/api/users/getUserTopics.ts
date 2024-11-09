@@ -19,4 +19,4 @@ export const queryGetUserTopics = async ({ id }: TGetUserTopicsParam) => {
 };
 
 queryGetUserTopics._key = (id: string) =>
-  ENDPOINT.USERS.GET_USER_TOPICS.url.replace("{id}", id);
+  [ENDPOINT.USERS.GET_USER_TOPICS.url.replace("{id}", id)]

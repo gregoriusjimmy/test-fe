@@ -19,4 +19,4 @@ export const queryGetUser = async ({ id }: TGetUserParam) => {
 };
 
 queryGetUser._key = (id: string) =>
-  ENDPOINT.USERS.GET_USER.url.replace("{id}", id);
+  [ENDPOINT.USERS.GET_USER.url.replace("{id}", id)]

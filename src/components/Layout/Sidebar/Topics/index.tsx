@@ -1,5 +1,5 @@
-import { useMemo } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useEffect, useMemo } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import dayjs from 'dayjs';
 
 import { EmptyTopicSVG } from "components/assets";
@@ -14,6 +14,7 @@ import useTopicStore from "store/TopicStore";
 
 import { TTopic } from "api/topics/types";
 import { ECOOKIES_KEY } from "constants/index";
+import { useQueryWithCallbacks } from "lib/react-query";
 
 interface TopicsProps {
   searchText?: string;
@@ -29,39 +30,42 @@ const Topics = ({ searchText }: TopicsProps) => {
   const isLogin = useAuthStore((state) => state.isLogin);
   const user = useAuthStore((state) => state.user);
   const onSetTopics = useTopicStore((state) => state.onSetTopics);
-  const queryClient = useQueryClient();
+  const onSetLoadingTopic = useTopicStore((state) => state.onSetLoading);
+const queryClient = useQueryClient()
 
   const { mutate: mutateDeleteTopic } = useMutation({
     mutationFn: mutationDeleteTopic,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [queryGetUserTopics._key(String(user.id))],
+        queryKey: queryGetUserTopics._key(String(user.id))
       });
     },
   });
+
   const { mutate: mutateUpdateTopic } = useMutation({
     mutationFn: mutationUpdateTopic,
     onSuccess:()=>{
       queryClient.invalidateQueries({
-        queryKey: [queryGetUserTopics._key(String(user.id))],
+        queryKey: queryGetUserTopics._key(String(user.id))
       });
     }
   });
 
-  const { data: topics, isLoading } = useQuery(
-    queryGetUserTopics._key(getCookies(ECOOKIES_KEY.USER_ID)),
-    () => queryGetUserTopics({ id: getCookies(ECOOKIES_KEY.USER_ID) }),
-    {
+  const { data: topics, isLoading } = useQueryWithCallbacks({
+    queryKey : queryGetUserTopics._key(getCookies(ECOOKIES_KEY.USER_ID)),
+   queryFn: () => queryGetUserTopics({ id: getCookies(ECOOKIES_KEY.USER_ID) }),
       enabled: isLogin,
       onError: () => {
         onSetTopics([]);
       },
       onSuccess: (data) => {
+        console.log('data',data)
         onSetTopics(data);
-      },
-    }
+      }}
   );
-
+useEffect(()=>{
+  onSetLoadingTopic(isLoading)
+},[isLoading, onSetLoadingTopic])
   const handleDelete = (topic: TTopic) => {
     mutateDeleteTopic({
       id: String(topic.id),

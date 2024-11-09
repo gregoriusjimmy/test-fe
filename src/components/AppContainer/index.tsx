@@ -1,5 +1,4 @@
 import { ReactNode, useEffect } from "react";
-import { useQuery } from "react-query";
 
 import Loader from "components/Loader";
 
@@ -9,6 +8,7 @@ import useAuthStore, { INIT_USER } from "store/AuthStore";
 import useThemeStore from "store/ThemeStore";
 
 import { ECOOKIES_KEY } from "constants/index";
+import { useQueryWithCallbacks } from "lib/react-query";
 
 interface AppContainerProps {
   children: ReactNode;
@@ -20,16 +20,14 @@ const AppContainer = ({ children }: AppContainerProps) => {
   const onSetLoadingAuth = useAuthStore((state) => state.onSetLoading);
   const onSetUser = useAuthStore((state) => state.onSetUser);
   const onSetIsLogin = useAuthStore((state) => state.onSetIsLogin);
-  const isLogin = useAuthStore((state) => state.isLogin);
   const rehydrateAllStore = () => {
     //  useThemeStore.persist.rehydrate();
     //  useWorkspaceStore.persist.rehydrate();
   };
 
-  const { isLoading: isLoadingGetUser } = useQuery(
-    queryGetUser._key(getCookies(ECOOKIES_KEY.USER_ID)),
-    () => queryGetUser({ id: getCookies(ECOOKIES_KEY.USER_ID) }),
-    {
+  const { isLoading: isLoadingGetUser } = useQueryWithCallbacks({
+    queryKey :queryGetUser._key(getCookies(ECOOKIES_KEY.USER_ID)),
+    queryFn: () => queryGetUser({ id: getCookies(ECOOKIES_KEY.USER_ID) }),
       enabled:
         !!getCookies(ECOOKIES_KEY.ACCESS_TOKEN) &&
         !!getCookies(ECOOKIES_KEY.USER_ID),
@@ -53,6 +51,7 @@ const AppContainer = ({ children }: AppContainerProps) => {
     }
   );
 
+  
   useEffect(() => {
     onSetLoadingAuth(isLoadingGetUser);
   }, [isLoadingGetUser, onSetLoadingAuth]);

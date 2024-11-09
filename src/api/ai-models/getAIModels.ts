@@ -11,4 +11,4 @@ export const queryGetAIModels = async () => {
   return (await getAIModels()).data.data;
 };
 
-queryGetAIModels._key = ENDPOINT.AI_MODELS.GET_AI_MODELS.url;
+queryGetAIModels._key = [ENDPOINT.AI_MODELS.GET_AI_MODELS.url];

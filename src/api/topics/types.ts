@@ -3,6 +3,7 @@ import { TCommonApiRes } from "..";
 export type TTopic = {
   id: number;
   userId: number;
+  aiModelId:number
   title: string;
   pinned: boolean;
   createdAt: string; // ISO date string

@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 
-import App from "pages/App";
+import Chat from "pages/Chat";
 import Login from "pages/Login";
 
 import { RouteType } from "types";
@@ -9,7 +9,13 @@ import { routePaths } from "./constants";
 export const routes: RouteType[] = [
   {
     path: routePaths.root.root,
-    element: <App />,
+    element: <Chat />,
+    requiredAuth: true,
+    withoutLayout: false,
+  },
+  {
+    path: routePaths.root.topic.root,
+    element: <Chat />,
     requiredAuth: true,
     withoutLayout: false,
   },

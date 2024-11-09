@@ -1,11 +1,10 @@
-import { useQuery } from "react-query";
-
 import Spinner from "components/Spinner";
 
 import { queryGetAIModels } from "api/ai-models";
 import cn from "lib/cn";
 import useAIModelStore from "store/AIModel";
 import useAuthStore from "store/AuthStore";
+import { useQueryWithCallbacks } from "lib/react-query";
 
 const AIModelPicker = () => {
   const isLogin = useAuthStore((state) => state.isLogin);
@@ -15,10 +14,9 @@ const AIModelPicker = () => {
   );
   const selectedAIModel = useAIModelStore((state) => state.selectedAIModel);
 
-  const { isLoading: isLoadingGetAIModels } = useQuery(
-    queryGetAIModels._key,
-    queryGetAIModels,
-    {
+  const { isLoading: isLoadingGetAIModels } = useQueryWithCallbacks({
+   queryKey: queryGetAIModels._key,
+   queryFn: queryGetAIModels,
       enabled: isLogin,
       onError: () => {
         onSetSelectedAIModel(null);
