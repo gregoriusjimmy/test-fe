@@ -1,9 +1,11 @@
 import { TCommonApiRes } from "..";
 
+import { TMessage } from "api/messages/types";
+
 export type TTopic = {
   id: number;
   userId: number;
-  aiModelId:number
+  aiModelId: number;
   title: string;
   pinned: boolean;
   createdAt: string; // ISO date string
@@ -27,3 +29,9 @@ export type TUpdateTopicReq = {
 };
 
 export type TUpdateTopicRes = TCommonApiRes<TTopic>;
+
+export type TGetTopicMessagesParam = {
+  topicId: string;
+};
+
+export type TGetTopicMessagesRes = TCommonApiRes<TMessage[]>;

@@ -1,10 +1,11 @@
 import AIModelPicker from "./AIModelPicker";
 import { Menu, MessageSquareDiff } from "lucide-react";
 
+import ThemeSwitcher from "./ThemeSwitcher";
+
 import { useMediaQueries } from "hooks/useMediaQuery";
 
 import { MAIN_HEADER_HEIGHT } from "../constants";
-import ThemeSwitcher from "./ThemeSwitcher";
 
 interface HeaderProps {
   onClickMenu: () => void;

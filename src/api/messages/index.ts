@@ -1,1 +1,5 @@
-export { mutationCreateFirstMessage, createFirstMessage } from "./createFirstMessage";
+export {
+  createFirstMessage,
+  mutationCreateFirstMessage,
+} from "./createFirstMessage";
+export { createMessage, mutationCreateMessage } from "./createMessage";

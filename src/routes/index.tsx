@@ -4,8 +4,8 @@ import AppContainer from "components/AppContainer";
 import AuthRoute from "components/AuthRoute";
 import Layout from "components/Layout";
 import LayoutRoute from "components/LayoutRoute";
-import { routes } from "./routes";
 import TopicRoute from "components/TopicRoute";
+import { routes } from "./routes";
 
 const MainElement = () => {
   return (
@@ -25,10 +25,8 @@ const router = createBrowserRouter([
       element: (
         <LayoutRoute route={route}>
           <AuthRoute route={route}>
-            <TopicRoute route={route}>
-            {route.element}
-            </TopicRoute>
-            </AuthRoute>
+            <TopicRoute route={route}>{route.element}</TopicRoute>
+          </AuthRoute>
         </LayoutRoute>
       ),
     })),

@@ -142,7 +142,7 @@ export type TFetcherConfig<T, A> = AxiosRequestConfig<T> & {
   ignoredKeysReq?: string[];
   ignoredKeysRes?: string[];
   urlData?: A;
-  isFormData?:boolean
+  isFormData?: boolean;
 };
 
 export type TFetcherError = {
@@ -152,13 +152,22 @@ export type TFetcherError = {
 
 export const fetcher = <TRes, TReq, TParam = unknown>(
   { url, method }: { url: string; method: EMethod },
-  {method:configMethod,url:configUrl,data,ignoredKeysReq,urlData,isFormData, headers = {},...config}: TFetcherConfig<TReq, TParam> = {}
+  {
+    method: configMethod,
+    url: configUrl,
+    data,
+    ignoredKeysReq,
+    urlData,
+    isFormData,
+    headers = {},
+    ...config
+  }: TFetcherConfig<TReq, TParam> = {}
 ): Promise<AxiosResponse<TRes>> => {
   if (ENV === EENV.DEV) {
     console.log("Payload:");
     console.log(transformer(data, snakeCase, ignoredKeysReq));
   }
-  const _urlData = urlData as any
+  const _urlData = urlData as any;
   // Replace placeholders in the URL if method is GET and config.data is available
   if (
     [EMethod.GET, EMethod.DELETE, EMethod.PUT].includes(method) &&
@@ -166,13 +175,13 @@ export const fetcher = <TRes, TReq, TParam = unknown>(
   ) {
     // Replace each placeholder in the URL with the corresponding value from config.data
     url = url.replace(/{(.*?)}/g, (match, key) => {
-      return key in _urlData!  ? _urlData[key] : match; // Use the value if it exists, else keep the placeholder
+      return key in _urlData! ? _urlData[key] : match; // Use the value if it exists, else keep the placeholder
     });
   }
   const transformedData = transformer(data, snakeCase, ignoredKeysReq);
-  let requestData = transformedData
+  let requestData = transformedData;
 
-  if(isFormData){
+  if (isFormData) {
     const formData = new FormData();
     Object.keys(transformedData).forEach((key) => {
       const value = (transformedData as any)[key];
@@ -183,12 +192,12 @@ export const fetcher = <TRes, TReq, TParam = unknown>(
         formData.append(key, value);
       }
     });
-    requestData= formData
-    headers = {...headers,'Content-Type':'multipart/form-data'}
+    requestData = formData;
+    headers = { ...headers, "Content-Type": "multipart/form-data" };
   }
 
   return _axios({
-    url : url|| configUrl,
+    url: url || configUrl,
     method: method || configMethod,
     data: requestData,
     headers,

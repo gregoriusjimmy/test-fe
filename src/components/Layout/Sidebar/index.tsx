@@ -1,6 +1,8 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { CirclePlus, LogOut, Search, User } from "lucide-react";
 
+import { LogoWhiteSVG } from "components/assets";
 import Button from "components/Button";
 import Topics from "./Topics";
 
@@ -8,6 +10,7 @@ import { logout as fetchLogout } from "api/auth";
 import { logout } from "helpers/logout";
 import { useOutsideClick } from "hooks/useOutsideClick";
 import cn from "lib/cn";
+import useAuthStore from "store/AuthStore";
 
 import {
   MIN_SIDEBAR_WIDTH,
@@ -15,15 +18,15 @@ import {
   SIDEBAR_FOOTER_HEIGHT,
   SIDEBAR_HEADER_HEIGHT,
 } from "../constants";
-import { LogoWhiteSVG } from "components/assets";
-import useAuthStore from "store/AuthStore";
+import { routePaths } from "routes/constants";
 
 const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [loadingLogout, setLoadingLogout] = useState(false);
-  const email = useAuthStore(state=>state.user.email)
+  const email = useAuthStore((state) => state.user.email);
   const ref = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
   useOutsideClick(ref, () => {
     setIsSearchOpen(false);
     setSearchText("");
@@ -52,6 +55,10 @@ const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
     });
   };
 
+  const handleClickNewChat = () => {
+    navigate(routePaths.root.root);
+  };
+
   return (
     <div
       style={{
@@ -68,7 +75,7 @@ const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
         className="flex flex-col pb-2 pt-4"
       >
         <div className="py-2 flex items-center justify-center">
-        <LogoWhiteSVG  className="w-fit h-auto mx-4 mb-4" />
+          <LogoWhiteSVG className="w-fit h-auto mx-4 mb-4" />
         </div>
         <div className="flex space-x-3 w-full px-4">
           <Button
@@ -98,7 +105,9 @@ const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
           >
             <CirclePlus className={cn("w-6 h-6 shrink-0")} />
             {!isSearchOpen && (
-              <div className="whitespace-pre ml-2">Chat Baru</div>
+              <div onClick={handleClickNewChat} className="whitespace-pre ml-2">
+                Chat Baru
+              </div>
             )}
           </Button>
         </div>
@@ -116,7 +125,10 @@ const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
         <div className="flex items-center text-foreground-200">
           <User className="mr-2 w-5 h-5 " /> <div>{email}</div>
         </div>
-        <div className="flex items-center text-foreground-200" onClick={handleLogout}>
+        <div
+          className="flex items-center text-foreground-200"
+          onClick={handleLogout}
+        >
           <LogOut className="mr-2 w-5 h-5 " /> <button>Logout</button>
         </div>
       </div>

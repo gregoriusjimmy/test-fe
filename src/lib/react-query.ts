@@ -1,49 +1,38 @@
 /**
-*
-* @descriptions
-* this helper is to accomodate callback has been removed from v5
-* references: https://github.com/TanStack/query/discussions/5279#discussioncomment-6846119
-*/
-
+ *
+ * @descriptions
+ * this helper is to accomodate callback has been removed from v5
+ * references: https://github.com/TanStack/query/discussions/5279#discussioncomment-6846119
+ */
 
 import { useEffect } from "react";
 import {
- useQuery,
- UseQueryOptions,
- UseQueryResult,
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
 } from "@tanstack/react-query";
 
-
 interface Callbacks<TData = unknown, TError = unknown> {
- onSuccess?: (data: TData) => void;
- onError?: (error: TError) => void;
+  onSuccess?: (data: TData) => void;
+  onError?: (error: TError) => void;
 }
 
-
 export const useQueryWithCallbacks = <TData = unknown, TError = unknown>(
- options: UseQueryOptions<TData, TError> & Callbacks<TData, TError>
+  options: UseQueryOptions<TData, TError> & Callbacks<TData, TError>
 ): UseQueryResult<TData, TError> => {
- const result = useQuery<TData, TError>(options);
+  const result = useQuery<TData, TError>(options);
 
+  useEffect(() => {
+    if (result.isSuccess && options?.onSuccess) {
+      options.onSuccess(result.data);
+    }
+  }, [result.data]);
 
- useEffect(() => {
-   if (result.isSuccess && options?.onSuccess) {
-     options.onSuccess(result.data);
-   }
- }, [result, options]);
+  useEffect(() => {
+    if (result.isError && options?.onError) {
+      options.onError(result.error);
+    }
+  }, [result.error]);
 
-
- useEffect(() => {
-   if (result.isError && options?.onError) {
-     options.onError(result.error);
-   }
- }, [result, options]);
-
-
- return result;
+  return result;
 };
-
-
-
-
-

@@ -9,4 +9,8 @@ export const TOPICS_ENDPOINT = {
     method: EMethod.PUT,
     url: "/topics/{id}",
   },
+  GET_TOPIC_MESSAGES: {
+    method: EMethod.GET,
+    url: "/topics/{topicId}/messages",
+  },
 };

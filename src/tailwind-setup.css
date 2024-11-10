@@ -3,98 +3,158 @@
 @tailwind utilities;
 
 
+:root {
+  /* Dark Mode Colors (from lighter to darkest) */
+  --background-100: 200, 200, 200; /* Light Gray */
+  --background-200: 140, 140, 140; /* Medium Light Gray */
+  --background-300: 100, 100, 100; /* Medium Gray */
+  --background-400: 80, 80, 80; /* Dark Gray */
+  --background-500: 60, 60, 60; /* Darker Gray */
+  --background-600: 40, 40, 40; /* Very Dark Gray */
+  --background-700: 20, 20, 20; /* Near Black */
+  --background-800: 10, 10, 10; /* Almost Black */
+  --background-900: 0, 0, 0; /* Pure Black */
+
+  --foreground-100: 255, 255, 255; /* White Text */
+  --foreground-200: 230, 230, 230; /* Light Text */
+  --foreground-300: 200, 200, 200; /* Soft Text */
+  --foreground-400: 180, 180, 180; /* Medium Light Text */
+  --foreground-500: 150, 150, 150; /* Default Text */
+  --foreground-600: 120, 120, 120; /* Medium Dark Text */
+  --foreground-700: 100, 100, 100; /* Darker Text */
+  --foreground-800: 80, 80, 80; /* Very Dark Text */
+  --foreground-900: 60, 60, 60; /* Almost Black Text */
+
+  /* Primary Color Scale for Dark Mode */
+  --primary-100: 240, 240, 240; /* Very Light Primary */
+  --primary-200: 220, 220, 220; /* Light Primary */
+  --primary-300: 200, 200, 200; /* Medium Light Primary */
+  --primary-400: 180, 180, 180; /* Soft Primary */
+  --primary-500: 160, 160, 160; /* Default Primary */
+  --primary-600: 140, 140, 140; /* Medium Dark Primary */
+  --primary-700: 120, 120, 120; /* Darker Primary */
+  --primary-800: 100, 100, 100; /* Very Dark Primary */
+  --primary-900: 80, 80, 80; /* Almost Black Primary */
+
+  /* Secondary Color Scale for Dark Mode */
+  --secondary-100: 240, 240, 240; /* Very Light Secondary */
+  --secondary-200: 220, 220, 220; /* Light Secondary */
+  --secondary-300: 200, 200, 200; /* Medium Light Secondary */
+  --secondary-400: 180, 180, 180; /* Soft Secondary */
+  --secondary-500: 160, 160, 160; /* Default Secondary */
+  --secondary-600: 140, 140, 140; /* Medium Dark Secondary */
+  --secondary-700: 120, 120, 120; /* Darker Secondary */
+  --secondary-800: 100, 100, 100; /* Very Dark Secondary */
+  --secondary-900: 80, 80, 80; /* Almost Black Secondary */
+}
+
+.light {
+  /* Light Mode Colors (from lightest to darker) */
+  --background-100: 255, 255, 255; /* Pure White */
+  --background-200: 255, 255, 255; /* Pure White */
+  --background-300: 255, 255, 255; /* Almost Pure White */
+  --background-400: 255, 255, 255; /* Very Light Background */
+  --background-500: 240, 240, 240; /* Light Default Background */
+  --background-600: 230, 230, 230; /* Light Medium Dark Background */
+  --background-700: 215, 215, 215; /* Light Darker Background */
+  --background-800: 200, 200, 200; /* Light Very Dark Background */
+  --background-900: 185, 185, 185; /* Light Almost Black Background */
+
+  --foreground-100: 0, 0, 0; /* Pure Black Text */
+  --foreground-200: 15, 15, 15; /* Darker Text */
+  --foreground-300: 30, 30, 30; /* Very Dark Text */
+  --foreground-400: 50, 50, 50; /* Darker Medium Text */
+  --foreground-500: 70, 70, 70; /* Default Text */
+  --foreground-600: 90, 90, 90; /* Medium Light Text */
+  --foreground-700: 110, 110, 110; /* Soft Medium Light Text */
+  --foreground-800: 130, 130, 130; /* Soft Light Text */
+  --foreground-900: 220, 220, 220; /* Light Gray Text */
+
+  /* Primary Color Scale for Light Mode */
+  --primary-100: 240, 240, 240; /* Light Primary */
+  --primary-200: 210, 210, 210; /* Light Primary */
+  --primary-300: 180, 180, 180; /* Medium Light */
+  --primary-400: 150, 150, 150; /* Soft Primary */
+  --primary-500: 57, 122, 226; /* Default Primary */
+  --primary-600: 49, 107, 193; /* Medium Dark Primary */
+  --primary-700: 41, 92, 160; /* Darker Primary */
+  --primary-800: 33, 78, 128; /* Very Dark Primary */
+  --primary-900: 25, 63, 95; /* Almost Black Primary */
+
+  /* Secondary Color Scale for Light Mode */
+  --secondary-100: 240, 240, 240; /* Light Secondary */
+  --secondary-200: 204, 204, 204; /* Medium Light Secondary */
+  --secondary-300: 168, 168, 168; /* Soft Secondary */
+  --secondary-400: 132, 132, 132; /* Medium Light */
+  --secondary-500: 100, 100, 100; /* Default Secondary */
+  --secondary-600: 70, 70, 70; /* Dark Secondary */
+  --secondary-700: 50, 50, 50; /* Darker Secondary */
+  --secondary-800: 30, 30, 30; /* Very Dark Secondary */
+  --secondary-900: 10, 10, 10; /* Almost Black Secondary */
+}
 
 
-
-   .dark {
-    /* Dark Mode Colors (from lighter to darkest) */
-    --background-100: 200, 200, 200; /* Light Gray */
-    --background-200: 140, 140, 140; /* Medium Light Gray */
-    --background-300: 100, 100, 100; /* Medium Gray */
-    --background-400: 80, 80, 80;    /* Dark Gray */
-    --background-500: 60, 60, 60;    /* Darker Gray */
-    --background-600: 40, 40, 40;    /* Very Dark Gray */
-    --background-700: 20, 20, 20;    /* Near Black */
-    --background-800: 10, 10, 10;    /* Almost Black */
-    --background-900: 0, 0, 0;        /* Pure Black */
-
-    --foreground-100: 255, 255, 255; /* White Text */
-    --foreground-200: 230, 230, 230; /* Light Text */
-    --foreground-300: 200, 200, 200; /* Soft Text */
-    --foreground-400: 180, 180, 180; /* Medium Light Text */
-    --foreground-500: 150, 150, 150; /* Default Text */
-    --foreground-600: 120, 120, 120; /* Medium Dark Text */
-    --foreground-700: 100, 100, 100; /* Darker Text */
-    --foreground-800: 80, 80, 80;    /* Very Dark Text */
-    --foreground-900: 60, 60, 60;    /* Almost Black Text */
-    
-    /* Primary Color Scale for Dark Mode */
-    --primary-100: 240, 240, 240;    /* Very Light Primary */
-    --primary-200: 220, 220, 220;     /* Light Primary */
-    --primary-300: 200, 200, 200;     /* Medium Light Primary */
-    --primary-400: 180, 180, 180;     /* Soft Primary */
-    --primary-500: 160, 160, 160;     /* Default Primary */
-    --primary-600: 140, 140, 140;     /* Medium Dark Primary */
-    --primary-700: 120, 120, 120;     /* Darker Primary */
-    --primary-800: 100, 100, 100;     /* Very Dark Primary */
-    --primary-900: 80, 80, 80;        /* Almost Black Primary */
-
-    /* Secondary Color Scale for Dark Mode */
-    --secondary-100: 240, 240, 240;   /* Very Light Secondary */
-    --secondary-200: 220, 220, 220;    /* Light Secondary */
-    --secondary-300: 200, 200, 200;    /* Medium Light Secondary */
-    --secondary-400: 180, 180, 180;    /* Soft Secondary */
-    --secondary-500: 160, 160, 160;    /* Default Secondary */
-    --secondary-600: 140, 140, 140;    /* Medium Dark Secondary */
-    --secondary-700: 120, 120, 120;    /* Darker Secondary */
-    --secondary-800: 100, 100, 100;    /* Very Dark Secondary */
-    --secondary-900: 80, 80, 80;        /* Almost Black Secondary */
+@layer utilities {
+  .animate-pulse2 {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  .animate-pulse-low {
+    animation: pulse-low 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  .animate-pulse2-4s {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
-  .light {
-    /* Light Mode Colors (from lightest to darker) */
-    --background-100: 255, 255, 255; /* Pure White */
-    --background-200: 255, 255, 255; /* Pure White */
-    --background-300: 255, 255, 255; /* Almost Pure White */
-    --background-400: 255, 255, 255; /* Very Light Background */
-    --background-500: 240, 240, 240; /* Light Default Background */
-    --background-600: 230, 230, 230; /* Light Medium Dark Background */
-    --background-700: 215, 215, 215; /* Light Darker Background */
-    --background-800: 200, 200, 200; /* Light Very Dark Background */
-    --background-900: 185, 185, 185; /* Light Almost Black Background */
-    
-    --foreground-100: 0, 0, 0;         /* Pure Black Text */
-    --foreground-200: 15, 15, 15;      /* Darker Text */
-    --foreground-300: 30, 30, 30;      /* Very Dark Text */
-    --foreground-400: 50, 50, 50;      /* Darker Medium Text */
-    --foreground-500: 70, 70, 70;      /* Default Text */
-    --foreground-600: 90, 90, 90;      /* Medium Light Text */
-    --foreground-700: 110, 110, 110;    /* Soft Medium Light Text */
-    --foreground-800: 130, 130, 130;    /* Soft Light Text */
-    --foreground-900: 220, 220, 220;    /* Light Gray Text */
-
-    /* Primary Color Scale for Light Mode */
-    --primary-100: 240, 240, 240;     /* Light Primary */
-    --primary-200: 210, 210, 210;     /* Light Primary */
-    --primary-300: 180, 180, 180;     /* Medium Light */
-    --primary-400: 150, 150, 150;     /* Soft Primary */
-    --primary-500: 57, 122, 226;      /* Default Primary */
-    --primary-600: 49, 107, 193;      /* Medium Dark Primary */
-    --primary-700: 41, 92, 160;       /* Darker Primary */
-    --primary-800: 33, 78, 128;       /* Very Dark Primary */
-    --primary-900: 25, 63, 95;        /* Almost Black Primary */
-
-    /* Secondary Color Scale for Light Mode */
-    --secondary-100: 240, 240, 240; /* Light Secondary */
-    --secondary-200: 204, 204, 204; /* Medium Light Secondary */
-    --secondary-300: 168, 168, 168; /* Soft Secondary */
-    --secondary-400: 132, 132, 132; /* Medium Light */
-    --secondary-500: 100, 100, 100;  /* Default Secondary */
-    --secondary-600: 70, 70, 70;     /* Dark Secondary */
-    --secondary-700: 50, 50, 50;     /* Darker Secondary */
-    --secondary-800: 30, 30, 30;     /* Very Dark Secondary */
-    --secondary-900: 10, 10, 10;     /* Almost Black Secondary */
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.95;
+    }
   }
+
+  @keyframes pulse-low {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
+}
+
+/* Style the scrollbar track */
+.scrollbar::-webkit-scrollbar {
+  width: 3px; /* Width of the scrollbar */
+  /* opacity: 0; */
+}
+
+/* Style the scrollbar thumb */
+.scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(var(--foreground-200)); /* Background color with opacity */
+  border-radius: 10px; /* Rounded corners */
+ /* opacity: 0; /* Initially hidden */
+  cursor: default; /* Default cursor */
+  position: absolute; /* Positioning */
+  z-index: 1; /* Layering */
+  will-change: transform; /* Performance optimization */
+  /* display: none; */
+}
+
+/* Show the scrollbar thumb on hover or when active */
+.scrollbar:hover::-webkit-scrollbar-thumb,
+.scrollbar::-webkit-scrollbar-thumb:active {
+  opacity: 1; /* Show scrollbar on hover or when active */
+  display: inline-flex;
+}
+
+/* Style the scrollbar track */
+.scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* Background of the scrollbar track */
+}
 
 @layer base {
   body,
@@ -106,34 +166,32 @@
   }
 
   .absolute-center {
-    @apply  absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+    @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
   }
 }
 
-
-@layer components{
-  
+@layer components {
 }
 
-
-@property --angle{
+@property --angle {
   syntax: "<angle>";
   initial-value: 0deg;
   inherits: false;
 }
 
-.coolBorder{
+.coolBorder {
   position: relative;
-  overflow:visible;
+  overflow: visible;
   z-index: 1;
 }
 
-.coolBorder::after, .coolBorder::before{
-  content: '';
+.coolBorder::after,
+.coolBorder::before {
+  content: "";
   position: absolute;
   height: 100%;
   width: 100%;
-  background-image: conic-gradient(from var(--angle), transparent,#60A5FA);
+  background-image: conic-gradient(from var(--angle), transparent, #60a5fa);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -143,16 +201,16 @@
   animation: 3s spin-border linear infinite;
 }
 
-.coolBorder::before{
+.coolBorder::before {
   filter: blur(1.5rem);
   opacity: 1;
 }
 
-@keyframes spin-border{
-  from{
+@keyframes spin-border {
+  from {
     --angle: 0deg;
   }
-  to{
+  to {
     --angle: 360deg;
   }
 }

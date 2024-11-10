@@ -8,13 +8,21 @@ export type TMessage = {
   response: string;
   responseFile: string;
   createdAt: string;
-}
+};
 
-export type TCreateFirstMessageReq ={
-  userId:string
-  aiModelId:string
-  message:string
+export type TCreateFirstMessageReq = {
+  userId: string;
+  aiModelId: string;
+  message: string;
   files?: File[];
-}
+};
 
-export type TCreateFirstMessageRes =TCommonApiRes<TMessage>
+export type TCreateFirstMessageRes = TCommonApiRes<TMessage>;
+
+export type TCreateMessageReq = {
+  topicId: string;
+  message: string;
+  files?: File[];
+};
+
+export type TCreateMessageRes = TCommonApiRes<TMessage>;

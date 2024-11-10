@@ -2,9 +2,9 @@ import Spinner from "components/Spinner";
 
 import { queryGetAIModels } from "api/ai-models";
 import cn from "lib/cn";
+import { useQueryWithCallbacks } from "lib/react-query";
 import useAIModelStore from "store/AIModel";
 import useAuthStore from "store/AuthStore";
-import { useQueryWithCallbacks } from "lib/react-query";
 
 const AIModelPicker = () => {
   const isLogin = useAuthStore((state) => state.isLogin);
@@ -15,18 +15,17 @@ const AIModelPicker = () => {
   const selectedAIModel = useAIModelStore((state) => state.selectedAIModel);
 
   const { isLoading: isLoadingGetAIModels } = useQueryWithCallbacks({
-   queryKey: queryGetAIModels._key,
-   queryFn: queryGetAIModels,
-      enabled: isLogin,
-      onError: () => {
-        onSetSelectedAIModel(null);
-      },
-      onSuccess: (data) => {
-        onSetAIModels(data);
-        onSetSelectedAIModel(data[0]);
-      },
-    }
-  );
+    queryKey: queryGetAIModels._key,
+    queryFn: queryGetAIModels,
+    enabled: isLogin,
+    onError: () => {
+      onSetSelectedAIModel(null);
+    },
+    onSuccess: (data) => {
+      onSetAIModels(data);
+      onSetSelectedAIModel(data[0]);
+    },
+  });
 
   if (!selectedAIModel?.modelName) return null;
 

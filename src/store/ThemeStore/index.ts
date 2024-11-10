@@ -33,7 +33,7 @@ const useThemeStore = create<TThemeStore>()(
   persist(
     (set) => ({
       loading: true,
-      theme: ETheme.DARK,
+      theme: ETheme.SYSTEM,
       onSetLoading: (value: boolean) => {
         set({
           loading: value,

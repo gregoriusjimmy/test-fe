@@ -5,14 +5,17 @@ import {
   useRef,
   useState,
 } from "react";
+import { useNavigate } from "react-router-dom";
 import { EllipsisVertical, Pencil } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { Pin } from "lucide-react";
 
+import { replaceParamFromRoute } from "helpers/replaceParamFromRoute";
 import { useOutsideClick } from "hooks/useOutsideClick";
 import cn from "lib/cn";
 
 import { TTopic } from "api/topics/types";
+import { routePaths, topicSlugParam } from "routes/constants";
 
 interface TopicProps {
   topic: TTopic;
@@ -29,11 +32,13 @@ const Topic = ({ topic, onDelete, onRename, onTogglePinned }: TopicProps) => {
   const topicRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const navigate = useNavigate();
   useOutsideClick(topicRef, () => {
     setOpenOptions(false);
   });
 
   const handleOpenOptions = (e: MouseEvent) => {
+    e.stopPropagation();
     setOpenOptions(true);
     setPosition({ x: e.clientX, y: e.clientY });
   };
@@ -61,6 +66,7 @@ const Topic = ({ topic, onDelete, onRename, onTogglePinned }: TopicProps) => {
 
   const handleBlurInput = () => {
     onRename(topic, title);
+    setIsRenaming(false);
   };
 
   const handleKeyDownInput = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -76,24 +82,51 @@ const Topic = ({ topic, onDelete, onRename, onTogglePinned }: TopicProps) => {
     setTitle(e.target.value);
   };
 
+  const handleClickTopic = () => {
+    navigate(
+      replaceParamFromRoute({
+        param: topicSlugParam,
+        route: routePaths.root.topic.root,
+        value: String(topic.id),
+      })
+    );
+  };
   return (
     <>
       <div
         className="flex justify-between items-center border-b border-b-background-600 px-4 text-foreground-200 font-medium hover:bg-background-600 rounded-lg cursor-pointer"
         key={topic.id}
+        onClick={handleClickTopic}
       >
-        {topic.pinned && <Pin className="w-5 h-5" />}
-        <input
-          ref={inputRef}
-          disabled={!isRenaming}
-          onBlur={handleBlurInput}
-          onKeyDown={handleKeyDownInput}
-          onChange={handleChangeTitle}
-          className={cn("py-2.5 bg-transparent truncate", {
-            "text-ellipsis overflow-hidden whitespace-nowrap": true,
-          })}
-          value={title}
-        />
+        {topic.pinned && <Pin className="w-5 h-5 shrink-0 mr-2" />}
+        {isRenaming ? (
+          <input
+            ref={inputRef}
+            disabled={!isRenaming}
+            onBlur={handleBlurInput}
+            onKeyDown={handleKeyDownInput}
+            onChange={handleChangeTitle}
+            className={cn(
+              "py-2.5 bg-transparent truncate cursor-pointer focus:cursor-text w-full",
+              {
+                "text-ellipsis overflow-hidden whitespace-nowrap": true,
+              }
+            )}
+            value={title}
+          />
+        ) : (
+          <div
+            className={cn(
+              "py-2.5 bg-transparent grow truncate cursor-pointer",
+              {
+                "text-ellipsis overflow-hidden whitespace-nowrap": true,
+              }
+            )}
+          >
+            {title}
+          </div>
+        )}
+
         <div onClick={handleOpenOptions} className="p-1">
           <EllipsisVertical className="w-5 h-5 shrink-0" />
         </div>

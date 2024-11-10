@@ -5,4 +5,8 @@ export const MESSAGES_ENDPOINT = {
     method: EMethod.POST,
     url: "/messages/first",
   },
+  CREATE_MESSAGE: {
+    method: EMethod.POST,
+    url: "/messages",
+  },
 };
