@@ -1,6 +1,6 @@
 import { ReactNode, useEffect } from "react";
 
-import Loader from "components/Loader";
+import AppSkeleton from "components/AppSkeleton";
 
 import { queryGetUser, queryGetUserTopics } from "api/users";
 import { clearCookies, getCookies, setCookies } from "helpers/cookies";
@@ -75,7 +75,7 @@ const AppContainer = ({ children }: AppContainerProps) => {
   const isLoading = isLoadingGetUser || isLoadingTopics;
 
   if (isLoading) {
-    return <Loader />;
+    return <AppSkeleton />;
   }
 
   return <div>{children}</div>;

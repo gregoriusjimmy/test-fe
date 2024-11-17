@@ -1,18 +1,24 @@
+import React, { forwardRef } from "react";
+
 import cn from "lib/cn";
 
-interface SpinnerProps {
-  className?: string;
-}
+type SpinnerProps = React.HTMLAttributes<HTMLDivElement>;
 
-const Spinner = ({ className }: SpinnerProps) => {
-  return (
-    <div
-      className={cn(
-        "w-8 h-8 border-4 border-gra-500 border-t-transparent rounded-full animate-spin",
-        className
-      )}
-    />
-  );
-};
+const Spinner = forwardRef<HTMLDivElement, SpinnerProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "w-[3.25rem] h-[3.25rem] border-2 border-background-500 border-t-background-100 rounded-full animate-spin",
+          className
+        )}
+        {...props}
+      />
+    );
+  }
+);
+
+Spinner.displayName = "Spinner";
 
 export default Spinner;

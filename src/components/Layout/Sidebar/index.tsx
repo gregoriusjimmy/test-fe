@@ -8,9 +8,11 @@ import Topics from "./Topics";
 
 import { logout as fetchLogout } from "api/auth";
 import { logout } from "helpers/logout";
+import { useMediaQueries } from "hooks/useMediaQuery";
 import { useOutsideClick } from "hooks/useOutsideClick";
 import cn from "lib/cn";
 import useAuthStore from "store/AuthStore";
+import useLayoutStore from "store/LayoutStore";
 
 import {
   MIN_SIDEBAR_WIDTH,
@@ -20,13 +22,20 @@ import {
 } from "../constants";
 import { routePaths } from "routes/constants";
 
-const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
+interface SidebarProps {
+  isOpen: boolean;
+}
+
+const Sidebar = ({ isOpen }: SidebarProps) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [loadingLogout, setLoadingLogout] = useState(false);
   const email = useAuthStore((state) => state.user.email);
   const ref = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+  const onSetSidebarOpen = useLayoutStore((state) => state.onSetSidebarOpen);
+  const isLg = useMediaQueries.LG();
+
   useOutsideClick(ref, () => {
     setIsSearchOpen(false);
     setSearchText("");
@@ -57,6 +66,9 @@ const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
 
   const handleClickNewChat = () => {
     navigate(routePaths.root.root);
+    if (!isLg) {
+      onSetSidebarOpen(false);
+    }
   };
 
   return (
@@ -114,7 +126,7 @@ const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
       </div>
       <div
         style={{ height: SIDEBAR_CONTENT_HEIGHT }}
-        className="overflow-auto h-[80vh] px-4 mt-4"
+        className="overflow-auto h-[80vh] px-4 mt-4 scrollbar"
       >
         <Topics searchText={searchText} />
       </div>

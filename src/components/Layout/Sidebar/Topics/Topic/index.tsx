@@ -11,8 +11,10 @@ import { Trash2 } from "lucide-react";
 import { Pin } from "lucide-react";
 
 import { replaceParamFromRoute } from "helpers/replaceParamFromRoute";
+import { useMediaQueries } from "hooks/useMediaQuery";
 import { useOutsideClick } from "hooks/useOutsideClick";
 import cn from "lib/cn";
+import useLayoutStore from "store/LayoutStore";
 
 import { TTopic } from "api/topics/types";
 import { routePaths, topicSlugParam } from "routes/constants";
@@ -31,7 +33,8 @@ const Topic = ({ topic, onDelete, onRename, onTogglePinned }: TopicProps) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const topicRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-
+  const onSetSidebarOpen = useLayoutStore((state) => state.onSetSidebarOpen);
+  const isLg = useMediaQueries.LG();
   const navigate = useNavigate();
   useOutsideClick(topicRef, () => {
     setOpenOptions(false);
@@ -83,6 +86,9 @@ const Topic = ({ topic, onDelete, onRename, onTogglePinned }: TopicProps) => {
   };
 
   const handleClickTopic = () => {
+    if (!isLg) {
+      onSetSidebarOpen(false);
+    }
     navigate(
       replaceParamFromRoute({
         param: topicSlugParam,
@@ -94,7 +100,7 @@ const Topic = ({ topic, onDelete, onRename, onTogglePinned }: TopicProps) => {
   return (
     <>
       <div
-        className="flex justify-between items-center border-b border-b-background-600 px-4 text-foreground-200 font-medium hover:bg-background-600 rounded-lg cursor-pointer"
+        className="flex justify-between items-center border-b border-b-background-600 pl-4 pr-2 text-foreground-200 font-medium hover:bg-background-600 rounded-lg cursor-pointer"
         key={topic.id}
         onClick={handleClickTopic}
       >

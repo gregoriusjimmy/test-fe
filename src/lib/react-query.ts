@@ -26,13 +26,15 @@ export const useQueryWithCallbacks = <TData = unknown, TError = unknown>(
     if (result.isSuccess && options?.onSuccess) {
       options.onSuccess(result.data);
     }
-  }, [result.data]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result.data, result.isSuccess]);
 
   useEffect(() => {
     if (result.isError && options?.onError) {
       options.onError(result.error);
     }
-  }, [result.error]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result.error, result.isError]);
 
   return result;
 };

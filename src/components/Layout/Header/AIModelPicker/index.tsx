@@ -36,7 +36,6 @@ const AIModelPicker = () => {
       )}
     >
       <p>
-        {" "}
         {isLoadingGetAIModels ? (
           <Spinner className="w-7 h-7 mx-4" />
         ) : (

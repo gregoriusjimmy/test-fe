@@ -6,3 +6,7 @@ export type RouteType = {
   requiredAuth?: boolean;
   withoutLayout?: boolean;
 };
+
+export interface CustomCSSProperties extends React.CSSProperties {
+  "--pulse-duration"?: string;
+}

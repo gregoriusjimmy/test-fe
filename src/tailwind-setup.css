@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
   /* Dark Mode Colors (from lighter to darkest) */
   --background-100: 200, 200, 200; /* Light Gray */
@@ -93,16 +92,14 @@
   --secondary-900: 10, 10, 10; /* Almost Black Secondary */
 }
 
-
 @layer utilities {
-  .animate-pulse2 {
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  .animate-pulse {
+    animation: pulse var(--pulse-duration, 2s) cubic-bezier(0.4, 0, 0.6, 1)
+      infinite;
   }
   .animate-pulse-low {
-    animation: pulse-low 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-  .animate-pulse2-4s {
-    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation: pulse-low var(--pulse-duration, 2s) cubic-bezier(0.4, 0, 0.6, 1)
+      infinite;
   }
 
   @keyframes pulse {
@@ -136,7 +133,7 @@
 .scrollbar::-webkit-scrollbar-thumb {
   background: rgba(var(--foreground-200)); /* Background color with opacity */
   border-radius: 10px; /* Rounded corners */
- /* opacity: 0; /* Initially hidden */
+  /* opacity: 0; /* Initially hidden */
   cursor: default; /* Default cursor */
   position: absolute; /* Positioning */
   z-index: 1; /* Layering */
@@ -213,4 +210,149 @@
   to {
     --angle: 360deg;
   }
+}
+
+.markdown {
+  line-height: 1.6;
+  color: rgba(var(--foreground-200)); /* Default foreground color */
+  background-color: rgba(var(--background-700)); /* Background color */
+}
+
+/* Headings */
+.markdown h1,
+.markdown h2,
+.markdown h3,
+.markdown h4,
+.markdown h5,
+.markdown h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+  color: rgba(var(--foreground-100)); /* Use light foreground for headings */
+}
+
+.markdown h1 {
+  font-size: 2.25em;
+  border-bottom: 2px solid rgba(var(--foreground-700)); /* Subtle divider */
+  padding-bottom: 0.25em;
+}
+
+.markdown h2 {
+  font-size: 1.75em;
+  border-bottom: 1px solid rgba(var(--foreground-700)); /* Subtle divider */
+  padding-bottom: 0.2em;
+}
+
+.markdown h3 {
+  font-size: 1.5em;
+}
+
+.markdown h4 {
+  font-size: 1.25em;
+}
+
+.markdown h5 {
+  font-size: 1.1em;
+}
+
+.markdown h6 {
+  font-size: 1em;
+  color: rgba(var(--foreground-400)); /* Slightly muted color for smaller headings */
+}
+
+/* Paragraphs */
+.markdown p {
+  margin: 1em 0;
+  line-height: 1.8;
+  color: rgba(var(--foreground-200)); /* Default foreground color */
+}
+
+/* Links */
+.markdown a {
+  color: rgba(var(--primary-500)); /* Primary color for links */
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(var(--primary-500));
+}
+
+.markdown a:hover {
+  color: rgba(var(--primary-600)); /* Slightly darker primary color */
+  border-bottom: 1px solid rgba(var(--primary-600));
+}
+
+/* Lists */
+.markdown ul,
+.markdown ol {
+  padding-left: 1.5em;
+  margin: 1em 0;
+}
+
+.markdown ul li {
+  list-style-type: disc;
+  margin-bottom: 0.5em;
+  color: rgba(var(--foreground-200)); /* Default foreground color */
+}
+
+.markdown ol li {
+  list-style-type: decimal;
+  margin-bottom: 0.5em;
+  color: rgba(var(--foreground-200)); /* Default foreground color */
+}
+
+/* Blockquotes */
+.markdown blockquote {
+  border-left: 4px solid rgba(var(--foreground-700)); /* Subtle divider */
+  margin: 1.5em 0;
+  padding-left: 1em;
+  color: rgba(var(--foreground-400)); /* Muted text color */
+  font-style: italic;
+}
+
+/* Code Blocks */
+.markdown pre {
+  background-color: rgba(var(--background-600)); /* Slightly lighter background */
+  border: 1px solid rgba(var(--foreground-800)); /* Subtle border */
+  border-radius: 5px;
+  padding: 1em;
+  overflow-x: auto;
+  color: rgba(var(--foreground-300)); /* Lighter text color */
+}
+
+.markdown code {
+  background-color: rgba(var(--background-600)); /* Slightly lighter background */
+  border: 1px solid rgba(var(--foreground-800)); /* Subtle border */
+  border-radius: 3px;
+  padding: 0.2em 0.4em;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 0.9em;
+  color: rgba(var(--primary-400)); /* Primary color for inline code */
+}
+
+/* Tables */
+.markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  background-color: rgba(var(--background-700)); /* Same as markdown background */
+  border: 1px solid rgba(var(--foreground-700)); /* Subtle border */
+}
+
+.markdown th,
+.markdown td {
+  border: 1px solid rgba(var(--foreground-700)); /* Subtle border */
+  padding: 0.5em;
+  text-align: left;
+  color: rgba(var(--foreground-200)); /* Default foreground color */
+}
+
+.markdown th {
+  background-color: rgba(var(--background-600)); /* Slightly darker background for headers */
+  font-weight: bold;
+  color: rgba(var(--foreground-100)); /* Light text for headers */
+}
+
+/* Horizontal Rule */
+.markdown hr {
+  border: 0;
+  border-top: 1px solid rgba(var(--foreground-700)); /* Subtle divider */
+  margin: 2em 0;
 }

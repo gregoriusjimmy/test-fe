@@ -1,5 +1,5 @@
 import AIModelPicker from "./AIModelPicker";
-import { Menu, MessageSquareDiff } from "lucide-react";
+import { Menu } from "lucide-react";
 
 import ThemeSwitcher from "./ThemeSwitcher";
 
@@ -9,10 +9,9 @@ import { MAIN_HEADER_HEIGHT } from "../constants";
 
 interface HeaderProps {
   onClickMenu: () => void;
-  onClickNewChat: () => void;
 }
 
-const Header = ({ onClickMenu, onClickNewChat }: HeaderProps) => {
+const Header = ({ onClickMenu }: HeaderProps) => {
   const isLg = useMediaQueries.LG();
 
   return (
@@ -27,12 +26,6 @@ const Header = ({ onClickMenu, onClickNewChat }: HeaderProps) => {
             className="hover:bg-foreground-800/50 rounded-sm p-2"
           >
             <Menu />
-          </button>
-          <button
-            onClick={onClickNewChat}
-            className="hover:bg-foreground-800/50 rounded-sm p-2"
-          >
-            <MessageSquareDiff />
           </button>
         </div>
       )}

@@ -7,9 +7,10 @@ type TAIModelStore = {
   selectedAIModel: TAIModel | null;
   onSetAIModels: (aiModels: TAIModel[]) => void;
   onSetSelectedAIModel: (aiModel: TAIModel | null) => void;
+  onSetSelectedAIModelById: (aiModelId: number) => void;
 };
 
-const useAIModelStore = create<TAIModelStore>()((set) => ({
+const useAIModelStore = create<TAIModelStore>()((set, get) => ({
   aiModels: [],
   selectedAIModel: null,
   onSetAIModels: (aiModels) => {
@@ -17,6 +18,11 @@ const useAIModelStore = create<TAIModelStore>()((set) => ({
   },
   onSetSelectedAIModel: (aiModel) => {
     set({ selectedAIModel: aiModel });
+  },
+  onSetSelectedAIModelById: (id: number) => {
+    const { aiModels } = get();
+    const selected = aiModels.find((model) => model.id === id);
+    set({ selectedAIModel: selected });
   },
 }));
 

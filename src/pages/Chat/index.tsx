@@ -1,16 +1,20 @@
 import React, {
   ChangeEvent,
+  HTMLAttributes,
   KeyboardEvent,
+  ReactNode,
   useEffect,
   useRef,
   useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { ArrowUp, Paperclip } from "lucide-react";
-
+import Spinner from "components/Spinner";
 import File from "./components/File";
-
+import Markdown from 'react-markdown'
+import rehypeHighlight from 'rehype-highlight';
 import {
   mutationCreateFirstMessage,
   mutationCreateMessage,
@@ -25,11 +29,20 @@ import useAuthStore from "store/AuthStore";
 import useTopicStore from "store/TopicStore";
 
 import { TMessage } from "api/messages/types";
+import { CustomCSSProperties } from "types/index";
+import { ID_AI_MODEL_LOGO_MAP } from "./constants";
 import { routePaths, topicSlugParam } from "routes/constants";
 
+
+type CodeProps = HTMLAttributes<HTMLElement> & {
+  children?: ReactNode // Make children optional to match expected HTMLAttributes
+  node?: any 
+}
 const App: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [text, setText] = useState("");
+  const [isFirstCreate, setIsFirstCreate] = useState(false);
+  const [tempMessage, setTempMessage] = useState("");
   const selectedTopic = useTopicStore((state) => state.selectedTopic);
   const onSetTopics = useTopicStore((state) => state.onSetTopics);
   const selectedAIModel = useAIModelStore((state) => state.selectedAIModel);
@@ -52,15 +65,16 @@ const App: React.FC = () => {
   };
 
   const { isLoading: isLoadingGetTopicMessages } = useQueryWithCallbacks({
-    enabled: !!selectedTopic?.id && !messages.length,
+    enabled: !!selectedTopic?.id && !isFirstCreate,
     queryKey: queryGetTopicMessages._key(String(selectedTopic?.id)),
     queryFn: () =>
       queryGetTopicMessages({ topicId: String(selectedTopic?.id) }),
     onSuccess: (res) => {
-      console.log("masuk get topic message");
-      console.log("!messages.length", !messages.length);
-      console.log("res.data", res.data);
-      setMessages(res.data);
+      const sortedMessages = [...res.data].sort((a, b) =>
+        dayjs(a.createdAt).diff(dayjs(b.createdAt))
+      );
+      setMessages(sortedMessages);
+      setIsFirstCreate(false);
     },
   });
 
@@ -69,8 +83,10 @@ const App: React.FC = () => {
     mutate: mutateCreateFirstMessage,
   } = useMutation({
     mutationFn: mutationCreateFirstMessage,
+    onSettled: () => {
+      setTempMessage("");
+    },
     onSuccess: (res) => {
-      console.log("b");
       queryClient.invalidateQueries({
         queryKey: queryGetUserTopics._key(String(user.id)),
       });
@@ -103,9 +119,10 @@ const App: React.FC = () => {
     mutate: mutateCreateMessage,
   } = useMutation({
     mutationFn: mutationCreateMessage,
+    onSettled: () => {
+      setTempMessage("");
+    },
     onSuccess: (res) => {
-      console.log("a");
-      console.log(res.data);
       setMessages((prev) => [...prev, res.data]);
     },
   });
@@ -155,18 +172,21 @@ const App: React.FC = () => {
 
   const handleClickSend = () => {
     if (!text || !selectedAIModel?.id) return;
+    const textForSend = text.trim();
+    setTempMessage(textForSend);
     setText("");
     if (messages.length) {
       if (!selectedTopic?.id) return;
       mutateCreateMessage({
-        message: text,
-        topicId: String(selectedTopic?.id),
+        message: textForSend,
+        topicId: String(selectedTopic.id),
       });
       return;
     }
+    setIsFirstCreate(true);
     mutateCreateFirstMessage({
       aiModelId: String(selectedAIModel.id),
-      message: text,
+      message: textForSend,
       userId: String(user.id),
     });
   };
@@ -186,36 +206,107 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
-    if (selectedTopic?.id !== prevSelectedTopicId) {
-      console.log("masuk use");
+    if (!selectedTopic?.id) {
       setMessages([]);
-      setPrevSelectedTopicId(selectedTopic?.id);
     }
   }, [prevSelectedTopicId, selectedTopic?.id]);
 
+  const loadingSend =
+    isPendingMutateCreateFirstMessage || isPendingMutateCreateMessage;
+
   return (
-    <div className="w-full">
+    <div className="w-full relative h-full">
       <div className="flex flex-col items-center  h-[calc(100vh-14rem)]  mx-auto overflow-auto scrollbar">
-        <div className="flex flex-col space-y-8 w-[50rem] mt-6">
+        <div className="flex flex-col space-y-8 w-[75%] lg:w-[60%] mt-6">
           {isLoadingGetTopicMessages ? (
-            <div>
-              <div className="bg-background-600 rounded-full text-foreground-200 ml-auto h-[2.87rem] w-[4rem]" />
+            <div className="flex flex-col space-y-8">
+              <div className="bg-background-600 rounded-full animate-pulse-low text-foreground-200 ml-auto h-[2.1875rem] w-[80%]" />
+              <div className="flex space-x-4 justify-start">
+                <div
+                  style={
+                    {
+                      "--pulse-duration": "3s",
+                    } as CustomCSSProperties
+                  }
+                  className="bg-background-100 rounded-full w-8 h-8 animate-pulse-low shrink-0 "
+                />
+                <div className="flex flex-col w-full space-y-4 ">
+                  {skeletons.map((skeleton, idx) => (
+                    <div
+                      key={idx}
+                      style={
+                        {
+                          height: "1.75rem",
+                          "--pulse-duration": skeleton.duration,
+                          width: skeleton.width,
+                        } as CustomCSSProperties
+                      }
+                      className="text-foreground-200 mt-1 bg-background-100 rounded-full animate-pulse-low"
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
           ) : (
             messages.map((message) => (
               <div className="flex flex-col space-y-8" key={message.id}>
-                <div className="bg-background-600  py-2 px-6 rounded-full text-foreground-200 w-fit ml-auto">
+                <div
+                  style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
+                  className="bg-background-600 py-2 px-6 rounded-3xl text-foreground-200 w-fit ml-auto"
+                >
                   {message.message}
                 </div>
-                <div className="text-foreground-200">{message.response}</div>
+                <div className="flex space-x-4 justify-start">
+                  {selectedAIModel?.id && (
+                    <div className="bg-background-500 rounded-full p-1 w-fit h-fit">
+                      {ID_AI_MODEL_LOGO_MAP[selectedAIModel.id]}
+                    </div>
+                  )}
+                  <div
+                    // style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
+                    className="text-foreground-200 -mt-3 markdown"
+                  >
+     <Markdown
+        // eslint-disable-next-line react/no-children-prop
+        children={message.response}
+        // rehypePlugins={[rehypeHighlight]}
+      />
+                  </div>
+                </div>
               </div>
             ))
           )}
+          {loadingSend && (
+            <div className="flex flex-col space-y-8">
+              <div
+                style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
+                className="bg-background-600 py-2 px-6 rounded-3xl text-foreground-200 w-fit ml-auto"
+              >
+                {tempMessage}
+              </div>
+              <div className="flex space-x-4 justify-start">
+                {selectedAIModel?.id && (
+                  <div className="bg-background-500 rounded-full p-1 w-fit h-fit">
+                    {ID_AI_MODEL_LOGO_MAP[selectedAIModel.id]}
+                  </div>
+                )}
+                <div
+                  style={
+                    {
+                      height: "1.75rem",
+                      "--pulse-duration": "2s",
+                      width: "50%",
+                    } as CustomCSSProperties
+                  }
+                  className="text-foreground-200 mt-0.5 bg-background-100 rounded-full animate-pulse-low"
+                />
+              </div>
+            </div>
+          )}
         </div>
-
         <div
           className={cn(
-            "fixed bottom-[3rem] w-[40rem] overflow-hidden  bg-background-800 flex flex-col border border-gray-700  pt-4 pb-5  rounded-full",
+            "absolute max-w-[80%  ] bottom-[3rem] w-[40rem] overflow-hidden  bg-background-800 flex flex-col border border-gray-700  pt-4 pb-5  rounded-full",
             files.length && "rounded-lg"
           )}
         >
@@ -237,6 +328,7 @@ const App: React.FC = () => {
             <input
               type="file"
               multiple
+              disabled={loadingSend}
               ref={fileInputRef}
               onChange={handleFileChange}
               className="hidden"
@@ -244,10 +336,7 @@ const App: React.FC = () => {
 
             <textarea
               ref={textareaRef}
-              disabled={
-                isPendingMutateCreateFirstMessage ||
-                isPendingMutateCreateMessage
-              }
+              disabled={loadingSend}
               className="text-foreground-200 bg-transparent pl-[4rem] pr-[4rem] focus:outline-none max-h-[4rem] w-full resize-none no-scrollbar "
               placeholder="Type a message..."
               rows={1}
@@ -259,9 +348,13 @@ const App: React.FC = () => {
             <button
               className="absolute bottom-0.5 right-0"
               onClick={handleClickSend}
-              disabled={loadingFiles}
+              disabled={loadingFiles || loadingSend}
             >
-              <ArrowUp className="w-14 h-14 transition-colors hover:bg-background-500  rounded-full p-2 text-foreground-200" />
+              {loadingSend ? (
+                <Spinner className="w-14 h-14" />
+              ) : (
+                <ArrowUp className="w-14 h-14 transition-colors hover:bg-background-500  rounded-full p-2 text-foreground-200" />
+              )}
             </button>
           </div>
         </div>
@@ -273,3 +366,11 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+const generateRandom = (min: number, max: number) =>
+  Math.random() * (max - min) + min;
+
+const skeletons = Array.from({ length: 1 }, (_, __) => ({
+  duration: `${generateRandom(1, 5).toFixed(2)}s`, // Random duration between 2–5s
+  width: `${generateRandom(50, 90).toFixed(2)}%`, // Random width between 50%–90%
+}));

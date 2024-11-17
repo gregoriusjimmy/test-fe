@@ -28,7 +28,7 @@ const Topics = ({ searchText }: TopicsProps) => {
 
   const { mutate: mutateDeleteTopic } = useMutation({
     mutationFn: mutationDeleteTopic,
-    onSuccess: () => {
+    onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: queryGetUserTopics._key(String(user.id)),
       });
@@ -37,7 +37,7 @@ const Topics = ({ searchText }: TopicsProps) => {
 
   const { mutate: mutateUpdateTopic } = useMutation({
     mutationFn: mutationUpdateTopic,
-    onSuccess: () => {
+    onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: queryGetUserTopics._key(String(user.id)),
       });
@@ -45,27 +45,125 @@ const Topics = ({ searchText }: TopicsProps) => {
   });
 
   const handleDelete = (topic: TTopic) => {
-    mutateDeleteTopic({
-      id: String(topic.id),
-    });
+    const previousTopics = queryClient.getQueryData<TTopic[]>(
+      queryGetUserTopics._key(String(user.id))
+    );
+
+    queryClient.setQueryData<TTopic[]>(
+      queryGetUserTopics._key(String(user.id)),
+      (oldTopics) => {
+        if (!oldTopics) return [];
+        return oldTopics.filter((t) => t.id !== topic.id); // Remove the topic
+      }
+    );
+
+    mutateDeleteTopic(
+      {
+        id: String(topic.id),
+      },
+      {
+        onError: () => {
+          queryClient.setQueryData(
+            queryGetUserTopics._key(String(user.id)),
+            previousTopics
+          );
+        },
+      }
+    );
   };
 
   const handleTogglePinned = (topic: TTopic) => {
-    mutateUpdateTopic({
-      payload: { pinned: topic.pinned ? false : true },
-      urlData: {
-        id: String(topic.id),
+    const cacheKey = queryGetUserTopics._key(String(user.id));
+    const previousTopics = queryClient.getQueryData<TTopic[]>(cacheKey) ?? []; // Fallback to empty array if undefined
+
+    // Toggle the pinned state of the topic and update the timestamp
+    const updatedTopic = {
+      ...topic,
+      pinned: !topic.pinned,
+      updatedAt: dayjs().toISOString(),
+    };
+
+    // Remove the selected topic from the list
+    const remainingTopics = previousTopics.filter((t) => t.id !== topic.id);
+
+    // If the topic is pinned, move it to the first position
+    if (updatedTopic.pinned) {
+      remainingTopics.unshift(updatedTopic);
+    } else {
+      // Find the last pinned index and insert the topic after it
+      const lastPinnedIndex = remainingTopics.reduce(
+        (index, t, i) => (t.pinned ? i : index),
+        -1
+      );
+      remainingTopics.splice(
+        lastPinnedIndex === -1 ? 0 : lastPinnedIndex + 1,
+        0,
+        updatedTopic
+      );
+    }
+
+    // Optimistically update the cache with the modified order
+    queryClient.setQueryData<TTopic[]>(cacheKey, remainingTopics);
+
+    // Mutate the topic update
+    mutateUpdateTopic(
+      {
+        payload: { pinned: updatedTopic.pinned },
+        urlData: { id: String(topic.id) },
       },
-    });
+      {
+        onError: () => {
+          // Revert cache in case of an error
+          queryClient.setQueryData(cacheKey, previousTopics);
+        },
+      }
+    );
   };
 
   const handleRename = (topic: TTopic, newTitle: string) => {
-    mutateUpdateTopic({
-      payload: { title: newTitle },
-      urlData: {
-        id: String(topic.id),
+    const cacheKey = queryGetUserTopics._key(String(user.id));
+    const previousTopics = queryClient.getQueryData<TTopic[]>(cacheKey) ?? []; // Fallback to empty array if undefined
+
+    // Remove the selected topic from the list
+    const remainingTopics = previousTopics.filter((t) => t.id !== topic.id);
+    const updatedTopic = {
+      ...topic,
+      title: newTitle,
+      updatedAt: dayjs().toISOString(),
+    };
+
+    // If the topic is pinned, move it to the first position
+    if (updatedTopic.pinned) {
+      remainingTopics.unshift(updatedTopic);
+    } else {
+      // Find the last pinned index and insert after it
+      const lastPinnedIndex = remainingTopics.reduce(
+        (index, t, i) => (t.pinned ? i : index),
+        -1
+      );
+      remainingTopics.splice(
+        lastPinnedIndex === -1 ? 0 : lastPinnedIndex + 1,
+        0,
+        updatedTopic
+      );
+    }
+
+    // Optimistically update the cache with the modified order
+    queryClient.setQueryData<TTopic[]>(cacheKey, remainingTopics);
+
+    // Mutate the topic update
+    mutateUpdateTopic(
+      {
+        payload: { title: newTitle },
+        urlData: { id: String(topic.id) },
       },
-    });
+      {
+        onError: () => {
+          // Revert cache in case of an error
+          queryClient.setQueryData(cacheKey, previousTopics);
+        },
+      }
+    );
   };
 
   const filteredTopics = useMemo(() => {
