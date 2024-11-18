@@ -125,7 +125,8 @@
 
 /* Style the scrollbar track */
 .scrollbar::-webkit-scrollbar {
-  width: 3px; /* Width of the scrollbar */
+  width: 5px; /* Width of the scrollbar */
+  height: 5px; /* Width of the scrollbar */
   /* opacity: 0; */
 }
 
@@ -308,25 +309,20 @@
 }
 
 /* Code Blocks */
-.markdown pre {
-  background-color: rgba(var(--background-600)); /* Slightly lighter background */
-  border: 1px solid rgba(var(--foreground-800)); /* Subtle border */
+.markdown pre{
   border-radius: 5px;
-  padding: 1em;
-  overflow-x: auto;
-  color: rgba(var(--foreground-300)); /* Lighter text color */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  white-space: pre; /* Preserve whitespace and formatting */
 }
 
-.markdown code {
-  background-color: rgba(var(--background-600)); /* Slightly lighter background */
-  border: 1px solid rgba(var(--foreground-800)); /* Subtle border */
+.markdown code:not(.hljs) {
+  background-color: rgba(var(--background-500));
   border-radius: 3px;
   padding: 0.2em 0.4em;
   font-family: "Courier New", Courier, monospace;
-  font-size: 0.9em;
-  color: rgba(var(--primary-400)); /* Primary color for inline code */
+  font-size: 1em;
+  color: rgba(var(--foreground-200));
 }
-
 /* Tables */
 .markdown table {
   width: 100%;
@@ -355,4 +351,16 @@
   border: 0;
   border-top: 1px solid rgba(var(--foreground-700)); /* Subtle divider */
   margin: 2em 0;
+}
+
+.copy-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+.copy-button:hover {
+  background-color: #45a049;
 }

@@ -13,8 +13,6 @@ import dayjs from "dayjs";
 import { ArrowUp, Paperclip } from "lucide-react";
 import Spinner from "components/Spinner";
 import File from "./components/File";
-import Markdown from 'react-markdown'
-import rehypeHighlight from 'rehype-highlight';
 import {
   mutationCreateFirstMessage,
   mutationCreateMessage,
@@ -32,6 +30,8 @@ import { TMessage } from "api/messages/types";
 import { CustomCSSProperties } from "types/index";
 import { ID_AI_MODEL_LOGO_MAP } from "./constants";
 import { routePaths, topicSlugParam } from "routes/constants";
+import Markdown from "components/Markdown";
+
 
 
 type CodeProps = HTMLAttributes<HTMLElement> & {
@@ -46,9 +46,7 @@ const App: React.FC = () => {
   const selectedTopic = useTopicStore((state) => state.selectedTopic);
   const onSetTopics = useTopicStore((state) => state.onSetTopics);
   const selectedAIModel = useAIModelStore((state) => state.selectedAIModel);
-  const [prevSelectedTopicId, setPrevSelectedTopicId] = useState(
-    selectedAIModel?.id
-  );
+
   const [loadingFiles, setLoadingFiles] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -175,6 +173,7 @@ const App: React.FC = () => {
     const textForSend = text.trim();
     setTempMessage(textForSend);
     setText("");
+    adjustTextareaHeight()
     if (messages.length) {
       if (!selectedTopic?.id) return;
       mutateCreateMessage({
@@ -195,21 +194,35 @@ const App: React.FC = () => {
 
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
-    adjustTextareaHeight();
+    adjustTextareaHeight()
   };
 
   const adjustTextareaHeight = () => {
+      setTimeout(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto"; // Reset height to auto to correctly calculate new scroll height
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
+
+        textareaRef.current.style.height = "auto"; //
+  
+        textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+  
+        const lineHeight = 24;
+        const maxHeight = lineHeight * 2;
+  
+        if (textareaRef.current.scrollHeight > maxHeight) {
+          textareaRef.current.style.overflowY = "scroll";
+          textareaRef.current.style.height = `${maxHeight}px`;
+        } else {
+          textareaRef.current.style.overflowY = "hidden";
+        }}
+      }, 10); 
+    
   };
 
   useEffect(() => {
     if (!selectedTopic?.id) {
       setMessages([]);
     }
-  }, [prevSelectedTopicId, selectedTopic?.id]);
+  }, [selectedTopic?.id]);
 
   const loadingSend =
     isPendingMutateCreateFirstMessage || isPendingMutateCreateMessage;
@@ -250,32 +263,23 @@ const App: React.FC = () => {
           ) : (
             messages.map((message) => (
               <div className="flex flex-col space-y-8" key={message.id}>
-                <div
-                  style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
-                  className="bg-background-600 py-2 px-6 rounded-3xl text-foreground-200 w-fit ml-auto"
-                >
-                  {message.message}
-                </div>
-                <div className="flex space-x-4 justify-start">
-                  {selectedAIModel?.id && (
-                    <div className="bg-background-500 rounded-full p-1 w-fit h-fit">
-                      {ID_AI_MODEL_LOGO_MAP[selectedAIModel.id]}
-                    </div>
-                  )}
-                  <div
-                    // style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
-                    className="text-foreground-200 -mt-3 markdown"
-                  >
-     <Markdown
-        // eslint-disable-next-line react/no-children-prop
-        children={message.response}
-        // rehypePlugins={[rehypeHighlight]}
-      />
-                  </div>
-                </div>
+              <div
+                style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
+                className="bg-background-600 py-2 px-6 rounded-3xl text-foreground-200 w-fit ml-auto"
+              >
+                {message.message}
               </div>
+              <div className="flex space-x-4 justify-start">
+                {selectedAIModel?.id && (
+                  <div className="bg-background-500 rounded-full p-1 w-fit h-fit">
+                    {ID_AI_MODEL_LOGO_MAP[selectedAIModel.id]}
+                  </div>
+                )}
+            <Markdown message={message.response}/>
+                </div>
+              </div>)
             ))
-          )}
+          }
           {loadingSend && (
             <div className="flex flex-col space-y-8">
               <div
@@ -306,7 +310,7 @@ const App: React.FC = () => {
         </div>
         <div
           className={cn(
-            "absolute max-w-[80%  ] bottom-[3rem] w-[40rem] overflow-hidden  bg-background-800 flex flex-col border border-gray-700  pt-4 pb-5  rounded-full",
+            "absolute max-w-[80%] bottom-[3rem] w-[40rem] overflow-hidden  bg-background-800 flex flex-col border border-gray-700  pt-4 pb-5  rounded-full",
             files.length && "rounded-lg"
           )}
         >
@@ -338,7 +342,7 @@ const App: React.FC = () => {
               ref={textareaRef}
               disabled={loadingSend}
               className="text-foreground-200 bg-transparent pl-[4rem] pr-[4rem] focus:outline-none max-h-[4rem] w-full resize-none no-scrollbar "
-              placeholder="Type a message..."
+              placeholder={loadingSend ?'Processing...' :"Type a message..."}
               rows={1}
               value={text}
               onChange={handleInput}
@@ -374,3 +378,4 @@ const skeletons = Array.from({ length: 1 }, (_, __) => ({
   duration: `${generateRandom(1, 5).toFixed(2)}s`, // Random duration between 2–5s
   width: `${generateRandom(50, 90).toFixed(2)}%`, // Random width between 50%–90%
 }));
+
