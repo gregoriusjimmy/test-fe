@@ -354,13 +354,16 @@
 }
 
 .copy-button {
-  background-color: #4CAF50;
-  color: white;
+  background-color: rgba(var(--background-300));
+  color: rgba(var(--foreground-100));
   border: none;
-  padding: 5px 10px;
+  width: 6rem;
+  padding: 0.5rem 0.8rem;
   cursor: pointer;
-  margin-left: 10px;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 .copy-button:hover {
-  background-color: #45a049;
+  background-color: rgba(var(--background-400));
 }

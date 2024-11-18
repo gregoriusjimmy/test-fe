@@ -185,14 +185,10 @@ export const fetcher = <TRes, TReq, TParam = unknown>(
     const formData = new FormData();
     Object.keys(transformedData).forEach((key) => {
       const value = (transformedData as any)[key];
-      if (Array.isArray(value)) {
-        // Append each file in array if value is an array (e.g., for multiple files)
-        value.forEach((file) => formData.append(key, file));
-      } else {
         formData.append(key, value);
-      }
     });
     requestData = formData;
+    
     headers = { ...headers, "Content-Type": "multipart/form-data" };
   }
 

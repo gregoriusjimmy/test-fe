@@ -37,6 +37,10 @@ const Markdown: React.FC<MarkdownProps> = ({ message }) => {
   useEffect(() => {
     // Apply the 'scrollbar' class to all <pre> elements
     const preElements = document.querySelectorAll('code');
+    const preElements1 = document.querySelectorAll('pre');
+    preElements1.forEach((pre) => {
+      pre.classList.add('relative');
+    });
     preElements.forEach((pre) => {
       pre.classList.add('scrollbar');
     });
@@ -51,7 +55,12 @@ const Markdown: React.FC<MarkdownProps> = ({ message }) => {
         copyButton.onclick = () => {
           const code = block.textContent || '';
           navigator.clipboard.writeText(code).then(() => {
-            alert('Copied to clipboard!');
+            const originalText = copyButton.textContent;
+            copyButton.textContent = 'Copied'; // Change button text to "Copied"
+            // Change it back to "Copy" after 2 seconds
+            setTimeout(() => {
+              copyButton.textContent = originalText;
+            }, 2000);
           }).catch((err) => {
             alert('Failed to copy: ' + err);
           });

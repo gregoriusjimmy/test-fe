@@ -31,6 +31,7 @@ import { CustomCSSProperties } from "types/index";
 import { ID_AI_MODEL_LOGO_MAP } from "./constants";
 import { routePaths, topicSlugParam } from "routes/constants";
 import Markdown from "components/Markdown";
+import { timeout } from "workbox-core/_private";
 
 
 
@@ -46,15 +47,15 @@ const App: React.FC = () => {
   const selectedTopic = useTopicStore((state) => state.selectedTopic);
   const onSetTopics = useTopicStore((state) => state.onSetTopics);
   const selectedAIModel = useAIModelStore((state) => state.selectedAIModel);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const [loadingFiles, setLoadingFiles] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
   const [messages, setMessages] = useState<TMessage[]>([]);
   const user = useAuthStore((state) => state.user);
   const navigate = useNavigate();
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (files.length + (event.target.files?.length ?? 0) > 5) return;
+    if (files.length + (event.target.files?.length ?? 0) > 1) return;
 
     if (event.target.files) {
       const selectedFiles = Array.from(event.target.files);
@@ -68,6 +69,7 @@ const App: React.FC = () => {
     queryFn: () =>
       queryGetTopicMessages({ topicId: String(selectedTopic?.id) }),
     onSuccess: (res) => {
+    
       const sortedMessages = [...res.data].sort((a, b) =>
         dayjs(a.createdAt).diff(dayjs(b.createdAt))
       );
@@ -82,6 +84,7 @@ const App: React.FC = () => {
   } = useMutation({
     mutationFn: mutationCreateFirstMessage,
     onSettled: () => {
+      setFiles([])
       setTempMessage("");
     },
     onSuccess: (res) => {
@@ -118,37 +121,23 @@ const App: React.FC = () => {
   } = useMutation({
     mutationFn: mutationCreateMessage,
     onSettled: () => {
+      setFiles([])
       setTempMessage("");
     },
     onSuccess: (res) => {
+      if(selectedTopic?.updatedAt && !dayjs(selectedTopic.updatedAt).isSame(dayjs(), 'day')){
+        queryClient.invalidateQueries({
+          queryKey: queryGetUserTopics._key(String(user.id)),
+        });
+      }
       setMessages((prev) => [...prev, res.data]);
     },
   });
 
   const handleFileInputClick = () => {
+    if(files.length>=1)return
     fileInputRef.current?.click();
   };
-
-  const handleUpload = async () => {
-    if (files.length === 0) return;
-
-    setLoadingFiles(true); // Start loading state
-
-    // Simulate file upload
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        console.log("Files uploaded:", files);
-        resolve(true);
-      }, 2000); // Simulate a 2-second upload time
-    });
-
-    setLoadingFiles(false); // End loading state
-    setFiles([]); // Reset selected files after upload
-  };
-
-  useEffect(() => {
-    console.log(files);
-  }, [files]);
 
   const imageURLs = files.map((file) => URL.createObjectURL(file));
 
@@ -156,6 +145,7 @@ const App: React.FC = () => {
     setFiles((prevFiles) => prevFiles.filter((file) => file !== fileToRemove)); // Remove the file from the list
     fileInputRef.current!.value = "";
   };
+
   useEffect(() => {
     return () => {
       imageURLs.forEach((url) => URL.revokeObjectURL(url)); // Clean up URLs
@@ -173,12 +163,19 @@ const App: React.FC = () => {
     const textForSend = text.trim();
     setTempMessage(textForSend);
     setText("");
+    setFiles([])
     adjustTextareaHeight()
+    setTimeout(()=>{
+      if (containerRef.current) {
+          containerRef.current.scrollTop = containerRef.current.scrollHeight;
+      }
+        },10)
     if (messages.length) {
       if (!selectedTopic?.id) return;
       mutateCreateMessage({
         message: textForSend,
         topicId: String(selectedTopic.id),
+        file: files[0]
       });
       return;
     }
@@ -187,7 +184,9 @@ const App: React.FC = () => {
       aiModelId: String(selectedAIModel.id),
       message: textForSend,
       userId: String(user.id),
+      file: files[0]
     });
+    
   };
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -206,7 +205,7 @@ const App: React.FC = () => {
         textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
   
         const lineHeight = 24;
-        const maxHeight = lineHeight * 2;
+        const maxHeight = lineHeight *6;
   
         if (textareaRef.current.scrollHeight > maxHeight) {
           textareaRef.current.style.overflowY = "scroll";
@@ -219,6 +218,8 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
+    setText('')
+    adjustTextareaHeight()
     if (!selectedTopic?.id) {
       setMessages([]);
     }
@@ -229,7 +230,9 @@ const App: React.FC = () => {
 
   return (
     <div className="w-full relative h-full">
-      <div className="flex flex-col items-center  h-[calc(100vh-14rem)]  mx-auto overflow-auto scrollbar">
+      <div 
+         ref={containerRef} 
+      className="flex flex-col items-center  h-[calc(100vh-14rem)]  mx-auto overflow-auto scrollbar">
         <div className="flex flex-col space-y-8 w-[75%] lg:w-[60%] mt-6">
           {isLoadingGetTopicMessages ? (
             <div className="flex flex-col space-y-8">
@@ -302,7 +305,7 @@ const App: React.FC = () => {
                       width: "50%",
                     } as CustomCSSProperties
                   }
-                  className="text-foreground-200 mt-0.5 bg-background-100 rounded-full animate-pulse-low"
+                  className="text-foreground-200 mt-1 bg-background-100 rounded-full animate-pulse-low"
                 />
               </div>
             </div>
@@ -310,7 +313,7 @@ const App: React.FC = () => {
         </div>
         <div
           className={cn(
-            "absolute max-w-[80%] bottom-[3rem] w-[40rem] overflow-hidden  bg-background-800 flex flex-col border border-gray-700  pt-4 pb-5  rounded-full",
+            "absolute max-w-[80%] bottom-[3rem] w-[40rem] overflow-hidden  bg-background-800 flex flex-col border border-gray-700  pt-4 pb-5  rounded-3xl",
             files.length && "rounded-lg"
           )}
         >
@@ -323,6 +326,7 @@ const App: React.FC = () => {
           )}
           <div className="flex items-center">
             <button
+            disabled={files.length>=1}
               className="absolute bottom-2.5 left-3 "
               onClick={handleFileInputClick}
             >
@@ -341,7 +345,7 @@ const App: React.FC = () => {
             <textarea
               ref={textareaRef}
               disabled={loadingSend}
-              className="text-foreground-200 bg-transparent pl-[4rem] pr-[4rem] focus:outline-none max-h-[4rem] w-full resize-none no-scrollbar "
+              className="text-foreground-200 bg-transparent pl-[4rem] pr-[4rem] focus:outline-none  w-full resize-none no-scrollbar "
               placeholder={loadingSend ?'Processing...' :"Type a message..."}
               rows={1}
               value={text}
@@ -352,7 +356,7 @@ const App: React.FC = () => {
             <button
               className="absolute bottom-0.5 right-0"
               onClick={handleClickSend}
-              disabled={loadingFiles || loadingSend}
+              disabled={ loadingSend}
             >
               {loadingSend ? (
                 <Spinner className="w-14 h-14" />
@@ -362,8 +366,6 @@ const App: React.FC = () => {
             </button>
           </div>
         </div>
-        {/* Show loading message while files are being uploaded */}
-        {loadingFiles && <p className="text-blue-600">Uploading files...</p>}
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ export type TCreateFirstMessageReq = {
   userId: string;
   aiModelId: string;
   message: string;
-  files?: File[];
+  file?: File;
 };
 
 export type TCreateFirstMessageRes = TCommonApiRes<TMessage>;
@@ -22,7 +22,7 @@ export type TCreateFirstMessageRes = TCommonApiRes<TMessage>;
 export type TCreateMessageReq = {
   topicId: string;
   message: string;
-  files?: File[];
+  file?: File
 };
 
 export type TCreateMessageRes = TCommonApiRes<TMessage>;
