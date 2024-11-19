@@ -156,7 +156,7 @@ export const fetcher = <TRes, TReq, TParam = unknown>(
     method: configMethod,
     url: configUrl,
     data,
-    ignoredKeysReq,
+    ignoredKeysReq = [],
     urlData,
     isFormData,
     headers = {},
@@ -168,6 +168,9 @@ export const fetcher = <TRes, TReq, TParam = unknown>(
     console.log(transformer(data, snakeCase, ignoredKeysReq));
   }
   const _urlData = urlData as any;
+  if (isFormData && !ignoredKeysReq.includes("file")) {
+    ignoredKeysReq.push("file");
+  }
   // Replace placeholders in the URL if method is GET and config.data is available
   if (
     [EMethod.GET, EMethod.DELETE, EMethod.PUT].includes(method) &&
@@ -185,10 +188,10 @@ export const fetcher = <TRes, TReq, TParam = unknown>(
     const formData = new FormData();
     Object.keys(transformedData).forEach((key) => {
       const value = (transformedData as any)[key];
-        formData.append(key, value);
+      formData.append(key, value);
     });
     requestData = formData;
-    
+
     headers = { ...headers, "Content-Type": "multipart/form-data" };
   }
 

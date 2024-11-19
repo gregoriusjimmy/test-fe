@@ -110,6 +110,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
             />
           </Button>
           <Button
+            onClick={handleClickNewChat}
             className={cn(
               "text-lg font-semibold flex items-center w-full",
               isSearchOpen && "w-[4rem]"
@@ -117,9 +118,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
           >
             <CirclePlus className={cn("w-6 h-6 shrink-0")} />
             {!isSearchOpen && (
-              <div onClick={handleClickNewChat} className="whitespace-pre ml-2">
-                Chat Baru
-              </div>
+              <div className="whitespace-pre ml-2">Chat Baru</div>
             )}
           </Button>
         </div>

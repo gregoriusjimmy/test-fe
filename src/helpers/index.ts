@@ -1,3 +1,4 @@
+export { getFileType } from "./getFileType";
 export { getInitial } from "./getInitial";
 export { isEmptyObject } from "./isEmptyObject";
 export { logout } from "./logout";

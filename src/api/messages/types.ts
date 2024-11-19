@@ -22,7 +22,7 @@ export type TCreateFirstMessageRes = TCommonApiRes<TMessage>;
 export type TCreateMessageReq = {
   topicId: string;
   message: string;
-  file?: File
+  file?: File;
 };
 
 export type TCreateMessageRes = TCommonApiRes<TMessage>;

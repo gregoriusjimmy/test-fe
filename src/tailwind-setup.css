@@ -258,7 +258,9 @@
 
 .markdown h6 {
   font-size: 1em;
-  color: rgba(var(--foreground-400)); /* Slightly muted color for smaller headings */
+  color: rgba(
+    var(--foreground-400)
+  ); /* Slightly muted color for smaller headings */
 }
 
 /* Paragraphs */
@@ -309,7 +311,7 @@
 }
 
 /* Code Blocks */
-.markdown pre{
+.markdown pre {
   border-radius: 5px;
   overflow-x: auto; /* Enable horizontal scrolling */
   white-space: pre; /* Preserve whitespace and formatting */
@@ -328,7 +330,9 @@
   width: 100%;
   border-collapse: collapse;
   margin: 1em 0;
-  background-color: rgba(var(--background-700)); /* Same as markdown background */
+  background-color: rgba(
+    var(--background-700)
+  ); /* Same as markdown background */
   border: 1px solid rgba(var(--foreground-700)); /* Subtle border */
 }
 
@@ -341,7 +345,9 @@
 }
 
 .markdown th {
-  background-color: rgba(var(--background-600)); /* Slightly darker background for headers */
+  background-color: rgba(
+    var(--background-600)
+  ); /* Slightly darker background for headers */
   font-weight: bold;
   color: rgba(var(--foreground-100)); /* Light text for headers */
 }
