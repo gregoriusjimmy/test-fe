@@ -4,6 +4,7 @@ export enum EFileType {
   SPREADSHEET = "spreadsheet",
   UNKNOWN = "unknown",
 }
+
 export const getFileType = (filename: string): EFileType => {
   const extension = filename.split(".").pop()?.toLowerCase();
 
@@ -16,9 +17,9 @@ export const getFileType = (filename: string): EFileType => {
     [EFileType.UNKNOWN]: [],
   };
 
-  for (const [type, extensions] of Object.entries(fileTypeMapping)) {
-    if (extensions.includes(extension)) {
-      return type as EFileType;
+  for (const type of Object.keys(fileTypeMapping) as EFileType[]) {
+    if (fileTypeMapping[type].includes(extension)) {
+      return type;
     }
   }
 

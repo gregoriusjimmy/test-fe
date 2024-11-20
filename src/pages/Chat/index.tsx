@@ -28,6 +28,8 @@ import { TMessage } from "api/messages/types";
 import { CustomCSSProperties } from "types/index";
 import { ID_AI_MODEL_LOGO_MAP } from "./constants";
 import { routePaths, topicSlugParam } from "routes/constants";
+import { FileText } from "lucide-react";
+import { EFileType, getFileType } from "helpers/getFileType";
 
 const App: React.FC = () => {
   const [tempFile, setTempFile] = useState<File>();
@@ -68,6 +70,7 @@ const App: React.FC = () => {
     onSettled: () => {
       setFiles([]);
       setTempMessage("");
+      setTempFile(undefined)
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({
@@ -105,6 +108,7 @@ const App: React.FC = () => {
     onSettled: () => {
       setFiles([]);
       setTempMessage("");
+      setTempFile(undefined)
     },
     onSuccess: (res) => {
       if (
@@ -140,6 +144,7 @@ const App: React.FC = () => {
     if (!text || !selectedAIModel?.id) return;
     const textForSend = text.trim();
     setTempMessage(textForSend);
+    setTempFile(files[0])
     setText("");
     setFiles([]);
     scrollToBottom();
@@ -173,7 +178,8 @@ const App: React.FC = () => {
     isPendingMutateCreateFirstMessage || isPendingMutateCreateMessage;
 
   const tempImageURL = tempFile ? URL.createObjectURL(tempFile) : "";
-
+  const isTempFileImage = tempFile?.type.startsWith("image/");
+  
   useEffect(() => {
     return () => {
       URL.revokeObjectURL(tempImageURL);
@@ -233,15 +239,33 @@ const App: React.FC = () => {
                   >
                     {message.message}
                   </div>
-                  {message.file && (
+                  {message.file  ? getFileType(message.file)  === EFileType.IMAGE ?(
+                         <a
+                         href={message.file}
+                         download="image.png" 
+                         target="_blank"
+                         rel="noopener noreferrer"
+                         className="inline-block mt-2"
+                       >
                     <img
-                      className=""
+                      className="ml-auto mt-2 max-w-[20rem] w-auto h-auto"
                       src={message.file}
                       width={200}
                       height={200}
                       alt=""
                     />
-                  )}
+                    </a>
+                  ):
+                  <a 
+                  href={message.file}
+                  download
+                    target="_blank"
+  rel="noopener noreferrer"
+                  className="ml-auto mt-2 flex items-center w-fit max-w-[20rem] h-16 space-x-2 px-3 border border-gray-700 rounded-lg">
+                  <FileText className="w-8 h-8 shrink-0" color="gray" />
+                  <span className="line-clamp-1 text-base w-full break-all">{message?.file}</span>
+                </a>: null
+                  }
                 </div>
                 <div className="flex space-x-4 justify-start">
                   {selectedAIModel?.id && (
@@ -249,18 +273,51 @@ const App: React.FC = () => {
                       {ID_AI_MODEL_LOGO_MAP[selectedAIModel.id]}
                     </div>
                   )}
+                  <div className="flex flex-col">
                   <Markdown message={message.response} />
+                  {message.responseFile && (
+                     <a
+                     href={message.responseFile}
+                     download="image.png" // Specify the default file name
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="inline-block mt-2"
+                   >
+                     <img
+                       className="max-w-[20rem] w-auto h-auto"
+                       src={message.responseFile}
+                       width={200}
+                       height={200}
+                       alt="Downloaded image"
+                     />
+                   </a>
+                  )}
+                  </div>
                 </div>
               </div>
             ))
           )}
           {loadingSend && (
             <div className="flex flex-col space-y-8">
+              <div className="flex flex-col">
               <div
                 style={{ whiteSpace: "pre-wrap", wordWrap: "break-word" }}
                 className="bg-background-600 py-2 px-6 rounded-3xl text-foreground-200 w-fit ml-auto"
               >
                 {tempMessage}
+              </div>
+              {isTempFileImage ? tempImageURL ? (
+                    <img
+                      className="ml-auto mt-2 max-w-[20rem] w-auto h-auto"
+                      src={tempImageURL}
+                      width={200}
+                      height={200}
+                      alt=""
+                    />
+                  ):     <div className="ml-auto mt-2 flex items-center w-fit max-w-[20rem] h-16 space-x-2 px-3 border border-gray-700 rounded-lg">
+                  <FileText className="w-8 h-8 shrink-0" color="gray" />
+                  <span className="line-clamp-1 text-base w-full break-all">{tempFile?.name}</span> 
+                </div> : null}
               </div>
               <div className="flex space-x-4 justify-start">
                 {selectedAIModel?.id && (

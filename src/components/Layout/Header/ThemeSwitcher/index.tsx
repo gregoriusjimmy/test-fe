@@ -7,7 +7,6 @@ const ThemeSwitcher = () => {
   const onSetTheme = useThemeStore((state) => state.onSetTheme);
 
   const handleToggleTheme = () => {
-    console.log(theme);
     if (theme === ETheme.DARK) {
       onSetTheme(ETheme.LIGHT);
     } else {
