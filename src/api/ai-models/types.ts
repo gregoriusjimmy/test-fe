@@ -13,4 +13,5 @@ export type TAIModel = {
 
 export enum EAIModelId {
   CHATGPT40 = 1,
+  'CLAUDE3.5SONNET' = 2,
 }

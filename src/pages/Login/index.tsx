@@ -52,7 +52,7 @@ const Login: React.FC = () => {
         <div className="flex w-full flex-col px-20 py-8 rounded-xl  items-center bg-background-700 ">
           <LogoWhiteSVG className="w-[20rem] mb-8 h-auto" />
           <p className="mb-5 font-medium text-lg text-foreground-200">
-            Sign in to start using MultiAi
+            Sign in to start using OneAI
           </p>
           <button
             className="flex w-fit whitespace-pre px-8 items-center hover:bg-background-500 transition  text-foreground-400 pt-3 pb-4 bg-background-400 font-medium rounded-full text-xl shadow"
