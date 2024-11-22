@@ -9,7 +9,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 
 import Markdown from "components/Markdown";
-import File from "./components/File";
 import InputBox from "./components/InputBox";
 
 import {
@@ -199,7 +198,7 @@ const App: React.FC = () => {
         ref={containerRef}
         className="flex flex-col items-center  h-[calc(100vh-14rem)]  mx-auto overflow-auto scrollbar"
       >
-        <div className="flex flex-col space-y-8 w-[75%] lg:w-[60%] mt-6">
+        <div className="flex flex-col space-y-8 w-[75%] lg:w-[60%] mt-6 ">
           {isLoadingGetTopicMessages ? (
             <div className="flex flex-col space-y-8">
               <div className="bg-background-600 rounded-full animate-pulse-low text-foreground-200 ml-auto h-[2.1875rem] w-[80%]" />
@@ -273,7 +272,7 @@ const App: React.FC = () => {
                       {ID_AI_MODEL_LOGO_MAP[selectedAIModel.id]}
                     </div>
                   )}
-                  <div className="flex flex-col">
+                  <div className="flex flex-col overflow-auto">
                   <Markdown message={message.response} />
                   {message.responseFile && (
                      <a
