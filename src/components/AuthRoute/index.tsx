@@ -7,6 +7,7 @@ import { useRenderStatus } from "helpers/useRenderStatus";
 import useAuthStore from "store/AuthStore";
 
 import { RouteType } from "types";
+import AppSkeleton from "components/AppSkeleton";
 
 interface AuthRouteProps {
   route: RouteType;
@@ -32,11 +33,11 @@ const AuthRoute = ({ route, children }: AuthRouteProps) => {
   }, [loadingAuth, isLogin, busy, route.requiredAuth]);
 
   if (!isLogin && route.requiredAuth) {
-    return <Loader />;
+    return <AppSkeleton />;
   }
 
   if ((loadingAuth || innerLoading) && route.requiredAuth) {
-    return <Loader />;
+    return <AppSkeleton />;
   }
 
   return <>{children}</>;
