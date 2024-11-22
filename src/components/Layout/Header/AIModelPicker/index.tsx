@@ -13,19 +13,19 @@ import { useNavigate } from "react-router-dom";
 import { routePaths } from "routes/constants";
 
 const AIModelPicker = () => {
-  const [openDropdown,setOpenDropdown]  = useState(false)
+  const [openDropdown, setOpenDropdown] = useState(false);
   const isLogin = useAuthStore((state) => state.isLogin);
   const onSetAIModels = useAIModelStore((state) => state.onSetAIModels);
   const onSetSelectedAIModel = useAIModelStore(
     (state) => state.onSetSelectedAIModel
   );
   const selectedAIModel = useAIModelStore((state) => state.selectedAIModel);
-  const refMenu = useRef<HTMLDivElement>(null)
-  const navigate = useNavigate()
-  useOutsideClick(refMenu,()=>{
-    setOpenDropdown(false)
-  })
-  const { isLoading: isLoadingGetAIModels,data } = useQueryWithCallbacks({
+  const refMenu = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  useOutsideClick(refMenu, () => {
+    setOpenDropdown(false);
+  });
+  const { isLoading: isLoadingGetAIModels, data } = useQueryWithCallbacks({
     queryKey: queryGetAIModels._key,
     queryFn: queryGetAIModels,
     enabled: isLogin,
@@ -38,24 +38,24 @@ const AIModelPicker = () => {
     },
   });
 
-  const onClickMenu = ()=>{
-    setOpenDropdown(prev=>!prev)
-  }
+  const onClickMenu = () => {
+    setOpenDropdown((prev) => !prev);
+  };
 
-  const handleClickSelectModel = (model:TAIModel)=>{
-    onSetSelectedAIModel(model)
-    navigate(routePaths.root.root)
-  }
+  const handleClickSelectModel = (model: TAIModel) => {
+    onSetSelectedAIModel(model);
+    navigate(routePaths.root.root);
+  };
 
   if (!selectedAIModel?.modelName) return null;
 
   return (
     <div
-    ref={refMenu}
-    onClick={onClickMenu}
+      ref={refMenu}
+      onClick={onClickMenu}
       className={cn(
         "py-3 px-6 text-foreground-300 font-semibold text-lg border rounded-full flex items-center relative",
-        data?.length && 'cursor-pointer'
+        data?.length && "cursor-pointer"
       )}
     >
       <p className="mr-4">
@@ -65,12 +65,27 @@ const AIModelPicker = () => {
           selectedAIModel?.modelName
         )}
       </p>
-      {data?.length && (openDropdown ? <ChevronUp className="w-6 h-6 text-foreground-200" /> : <ChevronDown className="w-6 h-6 text-foreground-200" />)}
-      {openDropdown &&  <div className="flex shadow-sm z-[99] flex-col py-1 absolute bg-background-800 border top-[4rem] right-0 border-foreground-300 rounded-xl overflow-hidden">{data?.filter(model=>model.id !== selectedAIModel.id).map((model)=>(
-        <div onClick={ ()=>handleClickSelectModel(model)} className="flex py-2 w-full whitespace-pre px-4 cursor-pointer bg-background-800 transition-colors hover:bg-background-600 text-foreground-100" key={model.id}>
-          {model.modelName}
-          </div>
-      ))}</div>}
+      {data?.length &&
+        (openDropdown ? (
+          <ChevronUp className="w-6 h-6 text-foreground-200" />
+        ) : (
+          <ChevronDown className="w-6 h-6 text-foreground-200" />
+        ))}
+      {openDropdown && (
+        <div className="flex shadow-sm z-[99] flex-col py-1 absolute bg-background-800 border top-[4rem] right-0 border-foreground-300 rounded-xl overflow-hidden">
+          {data
+            ?.filter((model) => model.id !== selectedAIModel.id)
+            .map((model) => (
+              <div
+                onClick={() => handleClickSelectModel(model)}
+                className="flex py-2 w-full whitespace-pre px-4 cursor-pointer bg-background-800 transition-colors hover:bg-background-600 text-foreground-100"
+                key={model.id}
+              >
+                {model.modelName}
+              </div>
+            ))}
+        </div>
+      )}
     </div>
   );
 };

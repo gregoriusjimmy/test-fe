@@ -1,11 +1,10 @@
 import { ChangeEvent, KeyboardEvent, useEffect, useRef } from "react";
-import { ArrowUp,Paperclip } from "lucide-react";
+import { ArrowUp, Paperclip } from "lucide-react";
 
 import Spinner from "components/Spinner";
 import File from "../File";
 
 import cn from "lib/cn";
-
 
 interface InputBoxProps {
   files: File[];
