@@ -2,9 +2,8 @@ import { clearCookies } from "./cookies";
 
 import { db } from "services/indexedDB";
 
-import { ENV } from "config";
+import { ENV, LOGIN_URL } from "config";
 import { EENV } from "constants/index";
-import { routePaths } from "routes/constants";
 
 export const logout = async () => {
   setTimeout(async () => {
@@ -20,6 +19,6 @@ export const logout = async () => {
       // redirectUrl = `${MAIN_URL}/bypass-auth`;
     }
 
-    window.location.replace(routePaths.root.login.root);
+    window.location.replace(LOGIN_URL);
   }, 500);
 };
