@@ -1,12 +1,12 @@
 {
-    "theme_color": "#000000",
-    "background_color": "#000000",
+    "theme_color": "#60A5FA",
+    "background_color": "#60A5FA",
     "display": "standalone",
     "scope": "/",
     "start_url": "/",
-    "name": "Worlder Group",
-    "short_name": "Worlder",
-    "description": "Worlder Web FE Boilerplate",
+    "name": "OneAI",
+    "short_name": "OneAI",
+    "description": "OneAI",
     "icons": [
         {
             "src": "/images/icon-192x192.png",
