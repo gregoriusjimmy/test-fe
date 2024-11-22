@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
+import { FileText } from "lucide-react";
 
 import Markdown from "components/Markdown";
 import InputBox from "./components/InputBox";
@@ -12,6 +13,7 @@ import {
 } from "api/messages";
 import { queryGetTopicMessages } from "api/topics";
 import { queryGetUserTopics } from "api/users";
+import { EFileType, getFileType } from "helpers/getFileType";
 import { replaceParamFromRoute } from "helpers/replaceParamFromRoute";
 import { useQueryWithCallbacks } from "lib/react-query";
 import useAIModelStore from "store/AIModel";
@@ -22,8 +24,6 @@ import { TMessage } from "api/messages/types";
 import { CustomCSSProperties } from "types/index";
 import { ID_AI_MODEL_LOGO_MAP } from "./constants";
 import { routePaths, topicSlugParam } from "routes/constants";
-import { FileText } from "lucide-react";
-import { EFileType, getFileType } from "helpers/getFileType";
 
 const App: React.FC = () => {
   const [tempFile, setTempFile] = useState<File>();

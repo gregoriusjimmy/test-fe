@@ -1,15 +1,17 @@
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ChevronDown, ChevronUp } from "lucide-react";
+
 import Spinner from "components/Spinner";
 
 import { queryGetAIModels } from "api/ai-models";
+import { useOutsideClick } from "hooks/useOutsideClick";
 import cn from "lib/cn";
 import { useQueryWithCallbacks } from "lib/react-query";
 import useAIModelStore from "store/AIModel";
 import useAuthStore from "store/AuthStore";
-import { useRef, useState } from "react";
-import { useOutsideClick } from "hooks/useOutsideClick";
-import { ChevronDown, ChevronUp } from "lucide-react";
+
 import { TAIModel } from "api/ai-models/types";
-import { useNavigate } from "react-router-dom";
 import { routePaths } from "routes/constants";
 
 const AIModelPicker = () => {
