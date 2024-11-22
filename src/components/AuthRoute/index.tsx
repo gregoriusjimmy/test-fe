@@ -1,13 +1,12 @@
 import { ReactNode, useEffect, useState } from "react";
 
-import Loader from "components/Loader";
+import AppSkeleton from "components/AppSkeleton";
 
 import { logout } from "helpers/logout";
 import { useRenderStatus } from "helpers/useRenderStatus";
 import useAuthStore from "store/AuthStore";
 
 import { RouteType } from "types";
-import AppSkeleton from "components/AppSkeleton";
 
 interface AuthRouteProps {
   route: RouteType;
