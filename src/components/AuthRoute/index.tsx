@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from "react";
 
-import AppSkeleton from "components/AppSkeleton";
+import Loader from "components/Loader";
 
 import { logout } from "helpers/logout";
 import { useRenderStatus } from "helpers/useRenderStatus";
@@ -32,11 +32,11 @@ const AuthRoute = ({ route, children }: AuthRouteProps) => {
   }, [loadingAuth, isLogin, busy, route.requiredAuth]);
 
   if (!isLogin && route.requiredAuth) {
-    return <AppSkeleton />;
+    return <Loader />;
   }
 
   if ((loadingAuth || innerLoading) && route.requiredAuth) {
-    return <AppSkeleton />;
+    return <Loader />;
   }
 
   return <>{children}</>;
