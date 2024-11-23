@@ -2,7 +2,7 @@ import { clearCookies } from "./cookies";
 
 import { db } from "services/indexedDB";
 
-import { ENV } from "config";
+import { ENV, LOGIN_URL } from "config";
 import { EENV } from "constants/index";
 
 export const logout = async () => {
@@ -18,5 +18,7 @@ export const logout = async () => {
       clearCookies();
       // redirectUrl = `${MAIN_URL}/bypass-auth`;
     }
-  }, 200);
+
+    window.location.replace(LOGIN_URL);
+  }, 500);
 };
